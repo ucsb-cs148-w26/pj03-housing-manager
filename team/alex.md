@@ -1,0 +1,1 @@
+Hi, I'm Alex Yoon and I am a 4th year student at UCSB. Some ideas I have for the project are: a html scraper that finds commonalities for housing managers, a web search algorithm for finding rent managers, and a comparison model for different prices.
