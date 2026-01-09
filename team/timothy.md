@@ -1,0 +1,1 @@
+Hi, my name is Timothy and I am a third year CS major. My ideas on this project revolve around making a user friendly app in order to help people look for housing in IV, especially students at UCSB so they can track and manage their housing status.
