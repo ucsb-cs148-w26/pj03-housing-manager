@@ -1,1 +1,0 @@
-I am a third year and some ideas I have is scraping data from different housing websites as a way to display different postings.
