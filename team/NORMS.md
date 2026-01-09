@@ -1,0 +1,5 @@
+- Everybody stays on schedule and checks in with each other.
+- Keep each other accountable by keeping constant communication.
+- Reach out for help when struggling.
+- Be responsive when reviewing PRs and create detailed PRs and commits.
+- Make sure to locally test features and ensure that the team can verify them too.
