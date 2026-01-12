@@ -4,7 +4,7 @@ Mentor: Jonathan Zhang, Kevin Lee, James Pflaging
 
 Meeting Time: lect02
 
-Type of meeting: <one or several of [sprint planning, daily scrum, sprint review, retrospective, story time]>
+Type of meeting: sprint planning, daily scrum
 
 Team: Nathan Mitter [x], Bryce Inouye [x], Alex Jeong [x], Om Kulkarni [x], Jeffrey Keem [x], Timothy Nguyễn [x], Alex Yoon [x], Kyle Villeponteau [x]
 
