@@ -12,8 +12,12 @@ Scribed Discussion:
 
 Alex Y updated the README. Timothy updated the Agreements. 
 Next tasks: 
+
 -Add .gitignore and a LICENSE.md; 
+
 -Figure out which techstacks to use; 
+
 -Continue elaborating on user features. 
+
 
 No scheduling conflict for the proceeding class. No current roadblocks.
