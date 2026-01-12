@@ -1,4 +1,4 @@
-**Housing Application Manager
+**Housing Application Manager**
 A web application designed to easily prase through different leasing companies and their various housing information with provided user pereferences. 
 
 Our project has no counterpart.
@@ -14,11 +14,11 @@ Technologies: python(good basic Backend data processing and aggregation of leasi
 
 
 Team members: 
-Alex Yoon github: alyoon04
-Kyle Villeponteau github: kylevillepo1
-Nathan Mitter github: SexyJesusFreak
-Jeffrey Keem github: jeff496
-Timothy Nguyen github: timothy 878
-Alex Jeong github: alexjh2
-Om Kulkarni github: omkulkarni77
-Bryce Inouye github: bryce_inouye
+Alex Yoon github: alyoon04  
+Kyle Villeponteau github: kylevillepo1  
+Nathan Mitter github: SexyJesusFreak  
+Jeffrey Keem github: jeff496  
+Timothy Nguyen github: timothy 878  
+Alex Jeong github: alexjh2  
+Om Kulkarni github: omkulkarni77  
+Bryce Inouye github: bryce_inouye  
