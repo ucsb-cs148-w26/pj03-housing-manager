@@ -1,4 +1,4 @@
-**Housing Application Manager**
+<font size="5">**Housing Application Manager**</font>  
 A web application designed to easily prase through different leasing companies and their various housing information with provided user pereferences. 
 
 Our project has no counterpart.
