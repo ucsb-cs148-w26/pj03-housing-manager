@@ -1,5 +1,64 @@
-<font size="5">**Housing Application Manager**</font>  
+<font size="5">**Housing Application Manager**</font>
 A web application designed to easily prase through different leasing companies and their various housing information with provided user pereferences.
+
+---
+
+## Hello World Demo (lab01)
+
+This is a React-based Hello World application for CS148 lab01.
+
+### Deployed App URL
+**
+
+### Prerequisites
+Before running this app, make sure you have the following installed:
+- **Node.js** (version 16 or higher) - [Download here](https://nodejs.org/)
+- **npm** (comes with Node.js)
+
+### Installation Instructions
+1. Clone this repository
+2. Navigate to the project directory
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running the App Locally
+To run the app in development mode:
+```bash
+npm run dev
+```
+The app will open at `http://localhost:5173` in your browser.
+
+### Building for Production
+To create a production build:
+```bash
+npm run build
+```
+
+### Deploying to Vercel
+1. Create a free account at [Vercel](https://vercel.com/)
+2. Install Vercel CLI (optional):
+   ```bash
+   npm install -g vercel
+   ```
+3. Deploy using one of these methods:
+
+   **Method 1: Vercel Dashboard (Easiest)**
+   - Push your code to GitHub
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click "New Project"
+   - Import your GitHub repository
+   - Vercel will auto-detect the framework and deploy
+
+   **Method 2: Vercel CLI**
+   - Run `vercel` in the project directory
+   - Follow the prompts
+   - Your app will be deployed and you'll get a URL
+
+---
+
+## Project Description
 
 Our project has no counterpart.
 
