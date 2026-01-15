@@ -1,50 +1,39 @@
-# Welcome to your Expo app 👋
+# Hello World – React Native Web App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an individual Hello World application built using React Native with Expo, deployed as a web application.
 
-## Get started
+---
 
-1. Install dependencies
+## Required Software
 
-   ```bash
-   npm install
-   ```
+The following software must be installed to run or deploy this app:
 
-2. Start the app
+- **Node.js** (v18 or newer recommended)  
+  https://nodejs.org
+- **npm** (included with Node.js)
+- **Git**
 
-   ```bash
-   npx expo start
-   ```
+(Optional, for deployment)
+- **Vercel CLI**
+  ```bash
+  npm install -g vercel
+  
 
-In the output, you'll find options to open the app in a
+## Getting the Code
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+git clone https://github.com/ucsb-cs148-w26/pj03-housing-manager.git
+cd pj03-housing-manager/aj-hello-world
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Running Locally
 
 ```bash
-npm run reset-project
+npm install
+npm run web
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Deployment
 
-## Learn more
+This app is deployed as a public app using Vercel
+Live URL: https://aj-hello-world-oxw5fgh85-alex-jeongs-projects.vercel.app/
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+You can also manually deploy from the command line using: vercel --prod
