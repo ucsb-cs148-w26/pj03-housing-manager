@@ -1,0 +1,51 @@
+.listing-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.listing-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.listing-category {
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.listing-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.listing-address {
+  margin: 8px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.listing-details {
+  color: #666;
+  font-size: 14px;
+}
+
+.listing-details .separator {
+  margin: 0 8px;
+  color: #ccc;
+}
+
+.listing-source {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #999;
+}
