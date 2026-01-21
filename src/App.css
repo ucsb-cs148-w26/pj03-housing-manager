@@ -1,71 +1,14 @@
-.App {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.App-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-h1 {
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.description {
-  color: #666;
-  margin: 0;
-}
-
-.App-main {
-  margin-top: 2rem;
-}
-
-.scraper-controls {
+.app {
+  min-height: 100vh;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  flex-direction: column;
 }
 
-.scraper-select {
-  padding: 12px 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-  background: white;
-  cursor: pointer;
-  min-width: 250px;
+.main-content {
+  flex: 1;
+  margin-top: var(--header-height);
 }
 
-.scraper-select:disabled {
-  background: #f5f5f5;
-  cursor: not-allowed;
-}
-
-.scrape-button {
-  background: #1976d2;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.scrape-button:hover:not(:disabled) {
-  background: #1565c0;
-}
-
-.scrape-button:disabled {
-  background: #90caf9;
-  cursor: not-allowed;
-}
-
-.last-scraped {
-  color: #666;
-  font-size: 14px;
+.main-content section {
+  scroll-margin-top: var(--header-height);
 }
