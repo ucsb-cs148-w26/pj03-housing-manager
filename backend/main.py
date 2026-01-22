@@ -8,6 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from scrapers.meridian import scrape_meridian
 
+from scrapers.playalife import scrape_playalife
+
+
 app = FastAPI(
     title="Housing Manager API",
     description="API for scraping and aggregating rental listings",
@@ -46,6 +49,14 @@ async def scrape_meridian_endpoint():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
 
+@app.get("/scrape/playalife")
+async def scrape_playalife_endpoint():
+    try:
+        result = await scrape_playalife()
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
 
 @app.get("/scrapers")
 async def list_scrapers():
@@ -57,6 +68,12 @@ async def list_scrapers():
                 "name": "Meridian Group Real Estate",
                 "url": "https://meridiangrouprem.com/",
                 "endpoint": "/scrape/meridian"
+            },
+            {
+                "id": "playalife",
+                "name": "PlayaLife IV",
+                "url": "https://www.playalifeiv.com/",
+                "endpoint": "/scrape/playalife"
             }
         ]
     }
