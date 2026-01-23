@@ -1,16 +1,32 @@
-import React from 'react'
+import Header from './components/Header/Header'
+import AboutSection from './components/AboutSection/AboutSection'
+import RecentListingsSection from './components/RecentListings/RecentListingsSection'
+import ScraperSection from './components/ScraperSection/ScraperSection'
+import Footer from './components/Footer/Footer'
 import './App.css'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Welcome to Housing Manager</h1>
-        <p>Hello, World!</p>
-        <p className="description">
-          This is a Hello World app for the CS148 Housing Manager project.
-        </p>
-      </header>
+    <div className="app">
+      <Header />
+
+      <main className="main-content">
+        <section id="about">
+          <AboutSection />
+        </section>
+
+        <section id="listings">
+          <RecentListingsSection />
+        </section>
+
+        <section id="scraper">
+          <ScraperSection />
+        </section>
+
+        <section id="contact">
+          <Footer />
+        </section>
+      </main>
     </div>
   )
 }

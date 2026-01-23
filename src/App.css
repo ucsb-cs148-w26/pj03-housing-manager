@@ -1,18 +1,14 @@
-.App {
-  text-align: center;
-  padding: 2rem;
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.App-header {
-  margin-top: 3rem;
+.main-content {
+  flex: 1;
+  margin-top: var(--header-height);
 }
 
-h1 {
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-p {
-  color: #666;
-  margin: 0.5rem 0;
+.main-content section {
+  scroll-margin-top: var(--header-height);
 }
