@@ -9,10 +9,9 @@ How we will do it
 - Follow Alex Y.'s example with Meridian
 - Install dependencies and identify website listing structure via Inspect to successfully web scrape
 - Push with branch, check, and merge
-
-Alex Y.: Meridian
-Alex J.: Playalife
-Kyle: Koto
-Nathan: Sierra
-Timothy: Wolfe
-Bryce: Solis
+- Alex Y.: Meridian
+- Alex J.: Playalife
+- Kyle: Koto
+- Nathan: Sierra
+- Timothy: Wolfe
+- Bryce: Solis
