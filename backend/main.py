@@ -101,6 +101,8 @@ async def list_scrapers():
                 "name": "PlayaLife IV",
                 "url": "https://www.playalifeiv.com/",
                 "endpoint": "/scrape/playalife"
+            },
+            {
                 "id": "koto",
                 "name": "Koto Group",
                 "url": "https://www.kotogroup.com/",
