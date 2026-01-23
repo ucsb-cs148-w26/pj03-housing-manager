@@ -6,6 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const SCRAPERS = [
   { id: 'meridian', name: 'Meridian Group Real Estate', url: 'meridiangrouprem.com' },
+  { id: 'solis', name: 'Solis Isla Vista', url: 'solisislavista.com' },
   // Add more scrapers here as they're implemented
 ];
 

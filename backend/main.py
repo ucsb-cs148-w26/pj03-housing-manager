@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from scrapers.meridian import scrape_meridian
+from scrapers.solis import scrape_solis
 
 app = FastAPI(
     title="Housing Manager API",
@@ -47,6 +48,19 @@ async def scrape_meridian_endpoint():
         raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
 
 
+@app.get("/scrape/solis")
+async def scrape_solis_endpoint():
+    """
+    Scrape rental listings from Solis Isla Vista.
+    Returns listings with price, bedrooms, bathrooms, address, square footage, and move-in date.
+    """
+    try:
+        result = await scrape_solis()
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
+
 @app.get("/scrapers")
 async def list_scrapers():
     """List available scrapers."""
@@ -57,6 +71,12 @@ async def list_scrapers():
                 "name": "Meridian Group Real Estate",
                 "url": "https://meridiangrouprem.com/",
                 "endpoint": "/scrape/meridian"
+            },
+            {
+                "id": "solis",
+                "name": "Solis Isla Vista",
+                "url": "https://solisislavista.com/",
+                "endpoint": "/scrape/solis"
             }
         ]
     }
