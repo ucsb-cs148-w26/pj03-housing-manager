@@ -1,6 +1,7 @@
 import Header from './components/Header/Header'
 import AboutSection from './components/AboutSection/AboutSection'
 import RecentListingsSection from './components/RecentListings/RecentListingsSection'
+import SubleaseListings from './components/SubleaseListings/SubleaseListings'
 import ScraperSection from './components/ScraperSection/ScraperSection'
 import Footer from './components/Footer/Footer'
 import './App.css'
@@ -17,6 +18,10 @@ function App() {
 
         <section id="listings">
           <RecentListingsSection />
+        </section>
+
+        <section id="sublease">
+          <SubleaseListings />
         </section>
 
         <section id="scraper">
