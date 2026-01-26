@@ -31,6 +31,11 @@ function Header() {
             </a>
           </li>
           <li>
+            <a href="#sublease" onClick={(e) => handleNavClick(e, 'sublease')}>
+              Sublease
+            </a>
+          </li>
+          <li>
             <a href="#contact" onClick={(e) => handleNavClick(e, 'contact')}>
               Contact
             </a>
