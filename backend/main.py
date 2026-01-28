@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from scrapers.meridian import scrape_meridian
+from scrapers.solis import scrape_solis
 from scrapers.Koto import scrape_koto
 from scrapers.playalife import scrape_playalife
 from scrapers.wolfe_scraper import scrape_wolfe
@@ -98,6 +99,19 @@ async def scrape_wolfe_endpoint():
         raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
 
 
+@app.get("/scrape/solis")
+async def scrape_solis_endpoint():
+    """
+    Scrape rental listings from Solis Isla Vista.
+    Returns listings with price, bedrooms, bathrooms, address, square footage, and move-in date.
+    """
+    try:
+        result = await scrape_solis()
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
+
 @app.get("/scrapers")
 async def list_scrapers():
     """List available scrapers."""
@@ -110,6 +124,10 @@ async def list_scrapers():
                 "endpoint": "/scrape/meridian"
             },
             {
+                "id": "solis",
+                "name": "Solis Isla Vista",
+                "url": "https://solisislavista.com/",
+                "endpoint": "/scrape/solis"
                 "id": "playalife",
                 "name": "PlayaLife IV",
                 "url": "https://www.playalifeiv.com/",
