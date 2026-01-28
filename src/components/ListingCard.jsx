@@ -23,7 +23,15 @@ function ListingCard({ listing }) {
         <span className="listing-category">{listing.category}</span>
         <span className="listing-price">{formatPrice(listing.price)}</span>
       </div>
-      <h3 className="listing-address">{listing.address}</h3>
+      <h3 className="listing-address">
+        {listing.url ? (
+          <a href={listing.url} target="_blank" rel="noopener noreferrer" className="listing-link">
+            {listing.address}
+          </a>
+        ) : (
+          listing.address
+        )}
+      </h3>
       <div className="listing-details">
         <span>{formatBedrooms(listing.bedrooms)}</span>
         <span className="separator">|</span>

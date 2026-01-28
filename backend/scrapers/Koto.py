@@ -88,10 +88,26 @@ async def scrape_koto() -> dict:
                 print(f"Found {len(listing_elements)} potential listings from div search")
 
         # Extract data from listing elements
+        seen_urls = set()
+        seen_addresses = set()
+        
         for element in listing_elements:
             try:
                 listing = await extract_listing_data(element)
                 if listing:
+                    # Deduplicate by URL first (most reliable)
+                    url = listing.get("url")
+                    if url:
+                        if url in seen_urls:
+                            continue
+                        seen_urls.add(url)
+                    else:
+                        # If no URL, deduplicate by address
+                        addr = listing.get("address", "").lower()
+                        if addr in seen_addresses:
+                            continue
+                        seen_addresses.add(addr)
+                    
                     listings.append(listing)
             except Exception as e:
                 print(f"Error extracting listing: {e}")
@@ -112,11 +128,75 @@ async def extract_listing_data(element) -> dict | None:
         # Get all text from the element
         text = await element.inner_text()
         
-        # Try to find address - look for address pattern
+        # Try to find URL/link - look for anchor tags within the element
+        url = None
+        # Try to find any link within the element (could be nested)
+        link = await element.query_selector("a")
+        
+        if link:
+            href = await link.get_attribute("href")
+            if href and not href.startswith("#") and not href.startswith("javascript:"):
+                # Make sure it's an absolute URL
+                if href.startswith("http"):
+                    url = href
+                elif href.startswith("/"):
+                    url = f"https://www.kotogroup.com{href}"
+                else:
+                    url = f"https://www.kotogroup.com/{href}"
+
+        # Only keep listings in ZIP code 93117
+        # (Koto includes multiple areas; we filter to Isla Vista / Goleta 93117.)
+        if "93117" not in text and (not url or "93117" not in url):
+            return None
+        
+        # Try to find address - first try to extract from URL (most reliable)
         address = None
-        address_match = re.search(r'(\d+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?\s+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct))', text)
-        if address_match:
-            address = address_match.group(1).strip()
+        unit = None
+        
+        # Extract address from URL if available (e.g., "/vacancies/6532-sabado-tarde-unit-a-goleta-ca-93117")
+        if url:
+            # Try to extract address with unit pattern from URL
+            # Pattern: /number-street-name-unit-X-city-ca-93117
+            url_match = re.search(r'/(\d+[a-z]?)-([a-z-]+?)(?:-(unit|apt|suite|ste)-([a-z0-9]+))?-(?:goleta|isla-vista|iv|santa-barbara)-ca-93117', url, re.IGNORECASE)
+            if url_match:
+                street_num = url_match.group(1)
+                street_name = url_match.group(2).replace('-', ' ').title()
+                if url_match.group(3) and url_match.group(4):
+                    unit = url_match.group(4).upper()
+                address = f"{street_num} {street_name}"
+            else:
+                # Try simpler pattern without unit
+                url_match2 = re.search(r'/(\d+[a-z]?)-([a-z-]+?)-(?:goleta|isla-vista|iv|santa-barbara)', url, re.IGNORECASE)
+                if url_match2:
+                    street_num = url_match2.group(1)
+                    street_name = url_match2.group(2).replace('-', ' ').title()
+                    address = f"{street_num} {street_name}"
+                else:
+                    # Try alternate URL pattern
+                    url_match3 = re.search(r'/(\d+[a-z]?)-([a-z-]+?)(?:-ca)?-93117', url, re.IGNORECASE)
+                    if url_match3:
+                        street_num = url_match3.group(1)
+                        street_name = url_match3.group(2).replace('-', ' ').title()
+                        address = f"{street_num} {street_name}"
+        
+        # Try to find unit number from text if not found in URL
+        if not unit:
+            unit_match = re.search(r'(?:unit|apt|suite|ste|#)\s*([a-z0-9]+)', text, re.IGNORECASE)
+            if unit_match:
+                unit = unit_match.group(1).upper()
+        
+        # If no address from URL, try text patterns
+        if not address:
+            # Look for full address with ZIP in text
+            full_addr_match = re.search(r'(\d+[A-Za-z]?\s+[A-Za-z][a-z]+(?:\s+[A-Za-z][a-z]+)?(?:\s+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Way|Court|Ct|Tarde|Del Playa|Embarcadero))?)', text, re.IGNORECASE)
+            if full_addr_match:
+                address = full_addr_match.group(1).strip()
+        
+        # If still no address, try simpler pattern
+        if not address:
+            address_match = re.search(r'(\d+[A-Za-z]?\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)', text)
+            if address_match:
+                address = address_match.group(1).strip()
         
         # If no address found, try to get from headings
         if not address:
@@ -127,6 +207,13 @@ async def extract_listing_data(element) -> dict | None:
                     if re.search(r'\d+\s+[A-Z]', heading_text):
                         address = heading_text.strip()
                         break
+        
+        # Build full address with unit, city, and ZIP
+        if address:
+            if unit:
+                address = f"{address} Unit {unit}, Goleta, CA 93117"
+            else:
+                address = f"{address}, Goleta, CA 93117"
         
         # Skip if no address found
         if not address or len(address) < 5:
@@ -163,7 +250,7 @@ async def extract_listing_data(element) -> dict | None:
         elif re.search(r'storage', text, re.IGNORECASE):
             category = "Storage"
         
-        return {
+        listing = {
             "address": address,
             "price": price,
             "bedrooms": bedrooms,
@@ -171,6 +258,12 @@ async def extract_listing_data(element) -> dict | None:
             "category": category,
             "source": "koto"
         }
+        
+        # Add URL if found
+        if url:
+            listing["url"] = url
+        
+        return listing
     except Exception as e:
         print(f"Error parsing listing: {e}")
         return None
