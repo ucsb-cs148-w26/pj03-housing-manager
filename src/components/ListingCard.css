@@ -34,6 +34,17 @@
   color: #333;
 }
 
+.listing-link {
+  color: #1976d2;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.listing-link:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
+
 .listing-details {
   color: #666;
   font-size: 14px;
