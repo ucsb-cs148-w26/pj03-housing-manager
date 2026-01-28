@@ -128,6 +128,8 @@ async def list_scrapers():
                 "name": "Solis Isla Vista",
                 "url": "https://solisislavista.com/",
                 "endpoint": "/scrape/solis"
+            },
+            {
                 "id": "playalife",
                 "name": "PlayaLife IV",
                 "url": "https://www.playalifeiv.com/",
