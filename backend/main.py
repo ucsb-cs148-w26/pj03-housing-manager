@@ -8,8 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from scrapers.meridian import scrape_meridian
 from scrapers.Koto import scrape_koto
-
 from scrapers.playalife import scrape_playalife
+from scrapers.wolfe_scraper import scrape_wolfe
 
 
 app = FastAPI(
@@ -85,6 +85,19 @@ async def scrape_koto_endpoint():
         raise HTTPException(status_code=500, detail=user_msg)
 
 
+@app.get("/scrape/wolfe")
+async def scrape_wolfe_endpoint():
+    """
+    Scrape rental listings from Wolfe & Associates (Isla Vista).
+    Returns listings with price, bedrooms, bathrooms, address, availability, and contact info.
+    """
+    try:
+        result = await scrape_wolfe()
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
+
 @app.get("/scrapers")
 async def list_scrapers():
     """List available scrapers."""
@@ -107,6 +120,12 @@ async def list_scrapers():
                 "name": "Koto Group",
                 "url": "https://www.kotogroup.com/",
                 "endpoint": "/scrape/koto"
+            },
+            {
+                "id": "wolfe",
+                "name": "Wolfe & Associates (Isla Vista)",
+                "url": "https://www.rlwa.com/",
+                "endpoint": "/scrape/wolfe"
             }
         ]
     }
