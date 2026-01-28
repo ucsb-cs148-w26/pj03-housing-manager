@@ -8,6 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from scrapers.meridian import scrape_meridian
 from scrapers.solis import scrape_solis
+from scrapers.Koto import scrape_koto
+from scrapers.playalife import scrape_playalife
+from scrapers.wolfe_scraper import scrape_wolfe
+
 
 app = FastAPI(
     title="Housing Manager API",
@@ -47,6 +51,53 @@ async def scrape_meridian_endpoint():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
 
+@app.get("/scrape/playalife")
+async def scrape_playalife_endpoint():
+    try:
+        result = await scrape_playalife()
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
+
+@app.get("/scrape/koto")
+async def scrape_koto_endpoint():
+    """
+    Scrape rental listings from Koto Group.
+    Returns listings with price, bedrooms, bathrooms, address, and category.
+    """
+    try:
+        result = await scrape_koto()
+        # Always return the result - if it has an error field, frontend will display it
+        return result
+    except Exception as e:
+        error_msg = str(e)
+        error_type = type(e).__name__
+        print(f"Exception in koto endpoint ({error_type}): {error_msg}")
+        
+        # Provide more helpful error messages
+        if "Load failed" in error_msg or "net::ERR" in error_msg or "net::" in error_msg:
+            user_msg = "The website failed to load. This could be due to network issues, the website being down, or blocking automated access."
+        elif "timeout" in error_msg.lower():
+            user_msg = "The request timed out. The website may be slow or not responding."
+        else:
+            user_msg = f"Scraping failed: {error_msg}"
+        
+        raise HTTPException(status_code=500, detail=user_msg)
+
+
+@app.get("/scrape/wolfe")
+async def scrape_wolfe_endpoint():
+    """
+    Scrape rental listings from Wolfe & Associates (Isla Vista).
+    Returns listings with price, bedrooms, bathrooms, address, availability, and contact info.
+    """
+    try:
+        result = await scrape_wolfe()
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
 
 @app.get("/scrape/solis")
 async def scrape_solis_endpoint():
@@ -77,6 +128,22 @@ async def list_scrapers():
                 "name": "Solis Isla Vista",
                 "url": "https://solisislavista.com/",
                 "endpoint": "/scrape/solis"
+                "id": "playalife",
+                "name": "PlayaLife IV",
+                "url": "https://www.playalifeiv.com/",
+                "endpoint": "/scrape/playalife"
+            },
+            {
+                "id": "koto",
+                "name": "Koto Group",
+                "url": "https://www.kotogroup.com/",
+                "endpoint": "/scrape/koto"
+            },
+            {
+                "id": "wolfe",
+                "name": "Wolfe & Associates (Isla Vista)",
+                "url": "https://www.rlwa.com/",
+                "endpoint": "/scrape/wolfe"
             }
         ]
     }
