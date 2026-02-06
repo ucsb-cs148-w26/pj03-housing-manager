@@ -137,34 +137,7 @@ pj03-housing-manager/
 
 ## Adding New Scrapers
 
-To add support for a new housing site:
-
-1. **Create a new scraper** in `backend/scrapers/` (e.g., `newsite.py`):
-   ```python
-   from playwright.async_api import async_playwright
-   from datetime import datetime
-
-   async def scrape_newsite() -> dict:
-       # Implement scraping logic
-       return {"listings": [...], "scraped_at": "...", "source": "newsite"}
-   ```
-
-2. **Add an endpoint** in `backend/main.py`:
-   ```python
-   from scrapers.newsite import scrape_newsite
-
-   @app.get("/scrape/newsite")
-   async def scrape_newsite_endpoint():
-       return await scrape_newsite()
-   ```
-
-3. **Add to frontend dropdown** in `src/App.jsx`:
-   ```javascript
-   const SCRAPERS = [
-     { id: 'meridian', name: 'Meridian Group Real Estate', url: 'meridiangrouprem.com' },
-     { id: 'newsite', name: 'New Site Name', url: 'newsite.com' },
-   ]
-   ```
+See [docs/scrapers.md](docs/scrapers.md) for full scraper documentation, including architecture details, the response schema, and a step-by-step guide for adding new scrapers.
 
 ---
 
