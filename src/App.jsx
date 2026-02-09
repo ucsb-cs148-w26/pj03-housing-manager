@@ -4,6 +4,7 @@ import AboutSection from './components/AboutSection/AboutSection'
 import RecentListingsSection from './components/RecentListings/RecentListingsSection'
 import SubleaseListings from './components/SubleaseListings/SubleaseListings'
 import ScraperSection from './components/ScraperSection/ScraperSection'
+import AllListingsSection from './components/AllListingsSection/AllListingsSection'
 import Footer from './components/Footer/Footer'
 import AdminUsersPage from './components/AdminUsersPage/AdminUsersPage'
 import './App.css'
@@ -17,6 +18,10 @@ function HomePage() {
 
       <section id="listings">
         <RecentListingsSection />
+      </section>
+
+      <section id="all-listings">
+        <AllListingsSection />
       </section>
 
       <section id="sublease">

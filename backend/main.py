@@ -2,7 +2,9 @@
 Housing Manager Backend API
 Provides endpoints for scraping rental listings from various sources.
 """
+import asyncio
 import os
+from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -110,6 +112,48 @@ async def scrape_solis_endpoint():
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
+
+@app.get("/scrape/all")
+async def scrape_all_endpoint():
+    """
+    Scrape rental listings from all property management companies in parallel.
+    Returns combined listings with source field on each. Failed scrapers are skipped.
+    """
+    scrapers = [
+        ("meridian", scrape_meridian),
+        ("playalife", scrape_playalife),
+        ("koto", scrape_koto),
+        ("solis", scrape_solis),
+        ("wolfe", scrape_wolfe),
+    ]
+
+    async def run_one(name, fn):
+        try:
+            return await fn()
+        except Exception as e:
+            print(f"Scraper {name} failed: {e}")
+            return {"listings": [], "scraped_at": None, "source": name}
+
+    results = await asyncio.gather(*[run_one(name, fn) for name, fn in scrapers])
+    all_listings = []
+    latest_at = None
+    for data in results:
+        listings = data.get("listings") or []
+        for listing in listings:
+            if "source" not in listing:
+                listing["source"] = data.get("source", "unknown")
+            all_listings.append(listing)
+        scraped_at = data.get("scraped_at")
+        if scraped_at and (latest_at is None or scraped_at > latest_at):
+            latest_at = scraped_at
+    if latest_at is None:
+        latest_at = datetime.now(timezone.utc).isoformat() + "Z"
+    return {
+        "listings": all_listings,
+        "scraped_at": latest_at,
+        "sources": [name for name, _ in scrapers],
+    }
 
 
 @app.get("/scrapers")
