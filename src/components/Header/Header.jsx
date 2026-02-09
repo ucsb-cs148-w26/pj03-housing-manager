@@ -36,6 +36,11 @@ function Header() {
             </a>
           </li>
           <li>
+            <a href={isHome ? '#all-listings' : '/#all-listings'} onClick={(e) => handleNavClick(e, 'all-listings')}>
+              Browse All
+            </a>
+          </li>
+          <li>
             <a href={isHome ? '#sublease' : '/#sublease'} onClick={(e) => handleNavClick(e, 'sublease')}>
               Sublease
             </a>

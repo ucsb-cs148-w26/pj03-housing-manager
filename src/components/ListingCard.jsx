@@ -36,6 +36,12 @@ function ListingCard({ listing }) {
         <span>{formatBedrooms(listing.bedrooms)}</span>
         <span className="separator">|</span>
         <span>{formatBathrooms(listing.bathrooms)}</span>
+        {listing.square_feet != null && (
+          <>
+            <span className="separator">|</span>
+            <span>{listing.square_feet.toLocaleString()} sq ft</span>
+          </>
+        )}
       </div>
       <div className="listing-source">Source: {listing.source}</div>
     </div>
