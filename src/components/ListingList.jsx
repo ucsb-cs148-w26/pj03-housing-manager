@@ -1,7 +1,7 @@
 import ListingCard from './ListingCard';
 import './ListingList.css';
 
-function ListingList({ listings, loading, error }) {
+function ListingList({ listings, loading, error, emptyMessage }) {
   if (loading) {
     return <div className="listing-status">Scraping listings... This may take a moment.</div>;
   }
@@ -11,7 +11,8 @@ function ListingList({ listings, loading, error }) {
   }
 
   if (!listings || listings.length === 0) {
-    return <div className="listing-status">No listings found. Click "Scrape Listings" to fetch data.</div>;
+    const message = emptyMessage ?? 'No listings found. Click "Scrape Listings" to fetch data.';
+    return <div className="listing-status">{message}</div>;
   }
 
   return (
