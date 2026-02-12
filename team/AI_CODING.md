@@ -27,3 +27,21 @@ The AI was effective for quickly scaffolding the backend aggregate logic, the Re
 
 ### Ensuring Correctness, Clarity, and Fair Use
 The generated code was reviewed and adjusted for correctness (e.g., filter logic, empty states, and API response shape). The AI output was treated as a draft and refined to match the existing codebase style and to document the changes in this file.
+
+---
+
+## Alex Jeong
+
+### Experiment Description
+I used ChatGPT to generate unit tests for the ListingCard React component. The goal was to evaluate how effectively AI could produce meaningful frontend test coverage for formatting logic and conditional rendering, such as price formatting, square footage rendering, and link rendering. The experiment focused on generating a complete test suite using React Testing Library and integrating it into our Vite-based project using Vitest.
+
+### Outcomes
+The AI produced a full ListingCard.test.jsx file containing multiple test cases covering standard rendering, null/undefined handling, the “Studio” bedroom case, square footage formatting, and conditional link behavior. After installing Vitest and configuring the Vite test environment (jsdom), the tests executed successfully. Minor adjustments were required to align exact expected text values with the component’s formatting logic.
+
+### Reflections on Usefulness
+The AI was effective at quickly scaffolding a comprehensive test structure, including realistic mock data and relevant edge cases. It significantly reduced the time required to write repetitive test boilerplate and helped ensure that multiple conditional paths were covered.
+
+This approach could be useful for expanding test coverage across other components and for accelerating frontend testing when introducing new UI features.
+
+### Ensuring Correctness, Clarity, and Fair Use
+The generated test code was manually reviewed and executed locally using Vitest to confirm correctness. Each assertion was verified against the actual component behavior to ensure accuracy. Adjustments were made where expected values did not exactly match the implemented formatting logic.
