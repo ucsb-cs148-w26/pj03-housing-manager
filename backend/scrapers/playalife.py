@@ -61,6 +61,17 @@ async def extract_listing_data(element) -> dict | None:
         baths_text = await baths_el.inner_text() if baths_el else ""
         baths_match = re.search(r'\d+(?:\.\d+)?', baths_text)
         bathrooms = float(baths_match.group()) if baths_match else None
+
+        # Link
+
+        link_el = await element.query_selector("a.slider-link")
+        relative_url = await link_el.get_attribute("href") if link_el else None
+
+        listing_url = (
+            f"https://www.playalifeiv.com{relative_url}"
+            if relative_url else None
+        )
+
         
         return {
             "listing_link": listing_link,
@@ -69,7 +80,8 @@ async def extract_listing_data(element) -> dict | None:
             "bedrooms": bedrooms,
             "bathrooms": bathrooms,
             "category": "Residential",
-            "source": "playalife"
+            "source": "playalife",
+            "link": listing_url
         }
     except Exception as e:
         print(f"Error parsing listing: {e}")
