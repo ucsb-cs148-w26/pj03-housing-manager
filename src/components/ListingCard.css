@@ -1,9 +1,9 @@
 .listing-card {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 16px;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--color-card-bg);
+  box-shadow: 0 2px 4px var(--color-shadow);
 }
 
 .listing-card-header {
@@ -14,8 +14,8 @@
 }
 
 .listing-category {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--color-info-bg);
+  color: var(--color-info);
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
@@ -25,38 +25,38 @@
 .listing-price {
   font-size: 18px;
   font-weight: 700;
-  color: #2e7d32;
+  color: var(--color-success);
 }
 
 .listing-address {
   margin: 8px 0;
   font-size: 16px;
-  color: #333;
+  color: var(--color-text);
 }
 
 .listing-link {
-  color: #1976d2;
+  color: var(--color-primary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .listing-link:hover {
-  color: #1565c0;
+  color: var(--color-info);
   text-decoration: underline;
 }
 
 .listing-details {
-  color: #666;
+  color: var(--color-text-light);
   font-size: 14px;
 }
 
 .listing-details .separator {
   margin: 0 8px;
-  color: #ccc;
+  color: var(--color-separator);
 }
 
 .listing-source {
   margin-top: 12px;
   font-size: 12px;
-  color: #999;
+  color: var(--color-muted);
 }

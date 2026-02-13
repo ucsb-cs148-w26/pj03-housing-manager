@@ -2,13 +2,13 @@
   background-color: var(--color-background);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--color-shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .listing-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px var(--color-shadow-hover);
 }
 
 .listing-card-image {
