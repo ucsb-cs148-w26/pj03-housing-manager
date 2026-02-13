@@ -1,7 +1,7 @@
 import ListingCard from './ListingCard';
 import './ListingList.css';
 
-function ListingList({ listings, loading, error, emptyMessage }) {
+function ListingList({ listings, loading, error, hasFilters = false }) {
   if (loading) {
     return <div className="listing-status">Scraping listings... This may take a moment.</div>;
   }
@@ -11,8 +11,10 @@ function ListingList({ listings, loading, error, emptyMessage }) {
   }
 
   if (!listings || listings.length === 0) {
-    const message = emptyMessage ?? 'No listings found. Click "Scrape Listings" to fetch data.';
-    return <div className="listing-status">{message}</div>;
+    if (hasFilters) {
+      return <div className="listing-status">No listings match your filters. Try adjusting your criteria.</div>;
+    }
+    return <div className="listing-status">No listings found. Click "Scrape Listings" to fetch data.</div>;
   }
 
   return (

@@ -19,6 +19,10 @@ RUN playwright install-deps chromium
 # Copy application code
 COPY . .
 
+# Create data directory for SQLite
+RUN mkdir -p /app/data
+ENV DB_PATH=/app/data/listings.db
+
 # Expose port
 EXPOSE 8000
 

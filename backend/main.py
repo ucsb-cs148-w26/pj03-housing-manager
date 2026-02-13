@@ -4,6 +4,7 @@ Provides endpoints for scraping rental listings from various sources.
 """
 import asyncio
 import os
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,11 +15,30 @@ from scrapers.Koto import scrape_koto
 from scrapers.playalife import scrape_playalife
 from scrapers.wolfe_scraper import scrape_wolfe
 
+from database import init_db, get_all_listings, get_scrape_metadata
+from scheduler import scrape_loop, run_all_scrapers_to_db
+
+_scrape_task = None
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global _scrape_task
+    await init_db()
+    _scrape_task = asyncio.create_task(scrape_loop())
+    yield
+    _scrape_task.cancel()
+    try:
+        await _scrape_task
+    except asyncio.CancelledError:
+        pass
+
 
 app = FastAPI(
     title="Housing Manager API",
     description="API for scraping and aggregating rental listings",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan,
 )
 
 # Enable CORS for frontend
@@ -154,6 +174,38 @@ async def scrape_all_endpoint():
         "scraped_at": latest_at,
         "sources": [name for name, _ in scrapers],
     }
+
+
+@app.get("/listings")
+async def listings_endpoint():
+    """Return all listings from the database (pre-scraped)."""
+    try:
+        listings = await get_all_listings()
+        meta = await get_scrape_metadata()
+        sources = list({l["source"] for l in listings})
+        return {
+            "listings": listings,
+            "last_updated": meta["last_updated"],
+            "total": meta["total_listings"],
+            "sources": sources,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database read failed: {str(e)}")
+
+
+@app.post("/listings/refresh")
+async def refresh_listings_endpoint():
+    """Manually trigger a full re-scrape and update the database."""
+    try:
+        await run_all_scrapers_to_db()
+        meta = await get_scrape_metadata()
+        return {
+            "status": "ok",
+            "total": meta["total_listings"],
+            "last_updated": meta["last_updated"],
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Refresh failed: {str(e)}")
 
 
 @app.get("/scrapers")

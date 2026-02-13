@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import ListingList from '../ListingList';
+import FilterPanel from '../FilterPanel/FilterPanel';
+import { filterListings } from '../../utils/filterListings';
 import './ScraperSection.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -19,6 +21,23 @@ function ScraperSection() {
   const [error, setError] = useState(null);
   const [lastScraped, setLastScraped] = useState(null);
   const [selectedScraper, setSelectedScraper] = useState(SCRAPERS[0].id);
+  const [filters, setFilters] = useState({
+    price: { min: null, max: null },
+    bedrooms: { min: null, max: null },
+    bathrooms: { min: null, max: null },
+    categories: [],
+  });
+
+  const filteredListings = useMemo(() => {
+    return filterListings(listings, filters);
+  }, [listings, filters]);
+
+  const hasActiveFilters =
+    filters.price.min !== null ||
+    filters.price.max !== null ||
+    filters.bedrooms.min !== null ||
+    filters.bathrooms.min !== null ||
+    filters.categories.length > 0;
 
   const handleScrape = async () => {
     setLoading(true);
@@ -72,7 +91,16 @@ function ScraperSection() {
           )}
         </div>
 
-        <ListingList listings={listings} loading={loading} error={error} />
+        {listings.length > 0 && (
+          <FilterPanel
+            filters={filters}
+            onFilterChange={setFilters}
+            listings={listings}
+            filteredCount={filteredListings.length}
+          />
+        )}
+
+        <ListingList listings={filteredListings} loading={loading} error={error} hasFilters={hasActiveFilters} />
       </div>
     </section>
   );
