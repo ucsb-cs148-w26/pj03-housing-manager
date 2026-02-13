@@ -45,3 +45,21 @@ This approach could be useful for expanding test coverage across other component
 
 ### Ensuring Correctness, Clarity, and Fair Use
 The generated test code was manually reviewed and executed locally using Vitest to confirm correctness. Each assertion was verified against the actual component behavior to ensure accuracy. Adjustments were made where expected values did not exactly match the implemented formatting logic.
+
+---
+
+## Timothy Nguyen
+
+## Experiment Description
+I used Claude (Anthropic) to systematically add listing URL functionality across multiple web scrapers for different property management companies. The task involved updating scraper Python files (Wolfe & Associates, Solis, PlayaLife, Meridian, and Koto) to extract and return listing URLs that link to the original property pages. This required modifying both the backend scrapers to capture URLs and ensuring the data structure matched the frontend expectations.
+
+## Outcomes
+The AI successfully updated five scraper files to include listing_link extraction logic. Each scraper was modified to locate the appropriate HTML anchor elements, extract the href attributes, convert relative URLs to absolute URLs, and return the URL in a consistent data structure. The frontend ListingCard component was already configured to display these links, so once the scrapers were updated, all listings became clickable and linked to their source pages.
+
+## Reflections on Usefulness
+Claude was extremely effective for this repetitive but critical task. The AI quickly identified the pattern needed across different scrapers, adapted to each scraper's unique HTML structure, and maintained consistency in the field naming (listing_link). This approach significantly accelerated development compared to manually updating each scraper, and the iterative debugging process helped catch issues with field naming mismatches between frontend and backend.
+This workflow could be highly useful for future scraper additions or updates, especially when maintaining consistency across multiple similar code files.
+
+## Ensuring Correctness, Clarity, and Fair Use
+Each generated scraper file was tested locally by running the backend server and checking the API responses to verify that listing_link fields were present and contained valid URLs. The frontend was tested in the browser to confirm that listing addresses were properly rendered as clickable links. The AI output was reviewed line-by-line to ensure the URL extraction logic was appropriate for each site's HTML structure, and adjustments were made when selectors needed refinement.
+
