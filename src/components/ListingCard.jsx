@@ -19,13 +19,18 @@ function ListingCard({ listing }) {
 
   return (
     <div className="listing-card">
+      {listing.image_url && (
+        <div className="listing-image-container">
+          <img src={listing.image_url} alt={listing.address} className="listing-image" />
+        </div>
+      )}
       <div className="listing-card-header">
         <span className="listing-category">{listing.category}</span>
         <span className="listing-price">{formatPrice(listing.price)}</span>
       </div>
       <h3 className="listing-address">
-        {listing.url ? (
-          <a href={listing.url} target="_blank" rel="noopener noreferrer" className="listing-link">
+        {listing.listing_link ? (
+          <a href={listing.listing_link} target="_blank" rel="noopener noreferrer" className="listing-link">
             {listing.address}
           </a>
         ) : (
@@ -36,12 +41,6 @@ function ListingCard({ listing }) {
         <span>{formatBedrooms(listing.bedrooms)}</span>
         <span className="separator">|</span>
         <span>{formatBathrooms(listing.bathrooms)}</span>
-        {listing.square_feet != null && (
-          <>
-            <span className="separator">|</span>
-            <span>{listing.square_feet.toLocaleString()} sq ft</span>
-          </>
-        )}
       </div>
       <div className="listing-source">Source: {listing.source}</div>
     </div>
