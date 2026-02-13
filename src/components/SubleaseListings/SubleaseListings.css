@@ -13,11 +13,11 @@
 
 /* Reuse your marketplace card style */
 .sublease-card {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 16px;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--color-card-bg);
+  box-shadow: 0 2px 4px var(--color-shadow);
 }
 
 .sublease-card-header {
@@ -28,8 +28,8 @@
 }
 
 .sublease-tag {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--color-info-bg);
+  color: var(--color-info);
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
@@ -39,25 +39,25 @@
 .sublease-price {
   font-size: 18px;
   font-weight: 700;
-  color: #2e7d32;
+  color: var(--color-success);
 }
 
 .sublease-location {
   margin: 8px 0;
   font-size: 16px;
-  color: #333;
+  color: var(--color-text);
   font-weight: 500;
 }
 
 .sublease-dates {
   font-size: 14px;
-  color: #666;
+  color: var(--color-text-light);
   margin-bottom: 6px;
 }
 
 .sublease-description {
   font-size: 14px;
-  color: #666;
+  color: var(--color-text-light);
   line-height: 1.4;
   margin-bottom: 12px;
 }
@@ -65,12 +65,12 @@
 /* Form polish */
 
 .sublease-form {
-  background: white;
+  background: var(--color-card-bg);
   margin: 30px auto;
   padding: 28px;
   border-radius: 8px;
   max-width: 600px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px var(--color-shadow);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -80,14 +80,16 @@
 .sublease-form textarea {
   padding: 12px;
   border-radius: 6px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-border);
   font-size: 14px;
+  background: var(--color-input-bg);
+  color: var(--color-text);
 }
 
 .sublease-form input:focus,
 .sublease-form textarea:focus {
   outline: none;
-  border-color: #1976d2;
+  border-color: var(--color-primary);
 }
 
 .sublease-button-wrapper {
@@ -97,7 +99,7 @@
 }
 
 .post-sublease-btn {
-  background-color: #007bff;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   padding: 14px 32px;
@@ -105,26 +107,26 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 4px var(--color-shadow-hover);
   transition: background 0.2s ease, transform 0.1s ease;
 }
 
 .post-sublease-btn:hover {
-  background-color: #0056b3;
+  background-color: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
 .sublease-placeholder {
-  background: white;
+  background: var(--color-card-bg);
   border-radius: 12px;
   padding: 60px 40px;
   margin-bottom: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--color-shadow);
 }
 
 .sublease-placeholder p {
   font-size: 1.2rem;
-  color: #555;
+  color: var(--color-text-light);
   margin: 10px 0;
 }
 

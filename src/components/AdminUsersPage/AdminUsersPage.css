@@ -34,7 +34,7 @@
   background-color: var(--color-background);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--color-shadow);
 }
 
 .admin-table th,
@@ -70,12 +70,12 @@
 }
 
 .admin-role-admin {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--color-role-admin-bg);
+  color: var(--color-role-admin);
 }
 
 .admin-role-user {
-  background-color: #f3f4f6;
+  background-color: var(--color-role-user-bg);
   color: var(--color-text-light);
 }
 
