@@ -135,3 +135,19 @@ The generated acceptance criteria with line-number verification served as a buil
 ## Conclusion
 
 This experiment demonstrated that AI-assisted development can successfully handle complex feature implementation when the task involves well-established patterns (React state management, CSS animations, accessibility best practices). The AI's ability to generate comprehensive documentation alongside code—particularly the verification-mapped acceptance criteria—represents a significant productivity enhancement for development workflows. Future experiments should explore integration with backend systems, authentication context, and automated test generation to complement the manual test IDs included in this implementation.
+
+---
+
+## Jeffrey Keem
+
+### Experiment Description
+I used AI to implement a dark and light mode toggle for the web app. The task involved adding theme state management, creating a toggle component, updating styles to support both dark and light themes, and ensuring the UI updated dynamically based on user selection. The AI generated and integrated the necessary frontend logic and styling changes, handling both the functional implementation and UI adjustments.
+
+### Outcomes
+The AI successfully implemented a working dark and light mode toggle. It added the required state management, connected the toggle to the application layout, and updated the styling to properly reflect each theme. The toggle allowed users to switch between themes seamlessly, and the selected mode persisted during usage. The implementation was completed with no manual intervention.
+
+### Reflections on Usefulness
+The AI was highly effective for this feature implementation. It handled both the logic and styling updates efficiently, reducing development time compared to implementing the feature manually. Because dark/light mode requires coordinated changes across components and styles, having the AI generate and integrate the necessary updates ensured consistency throughout the application. This approach would be especially useful for similar UI enhancements or frontend features in the future.
+
+### Ensuring Correctness, Clarity, and Fair Use
+The implementation was tested by running the application locally and verifying that the toggle correctly switched between dark and light themes across all relevant components. UI behavior was checked to ensure styles updated consistently and no elements were visually broken in either mode. The generated code was reviewed to confirm clarity, maintainability, and proper separation of concerns before final integration.
