@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './Header.css';
 
 function Header() {
@@ -59,7 +60,10 @@ function Header() {
             </Link>
           </li>
         </ul>
-        <button className="header-login-btn">Login</button>
+        <div className="header-actions">
+          <ThemeToggle />
+          <button className="header-login-btn">Login</button>
+        </div>
       </nav>
     </header>
   );
