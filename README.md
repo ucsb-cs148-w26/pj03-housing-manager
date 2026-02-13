@@ -63,12 +63,22 @@ npm run dev
 
 The app will open at `http://localhost:5173` in your browser.
 
-#### 3. Using the Scraper
+#### 3. Using the App
 
 1. Open `http://localhost:5173` in your browser
-2. Select a housing site from the dropdown (e.g., "Meridian Group Real Estate")
-3. Click "Scrape Listings"
-4. View the scraped rental listings with price, beds, baths, and address
+2. The "Browse All Listings" section auto-loads cached listings from the database
+3. On first startup, the backend scrapes all 5 rental sites in the background (~60s) and stores results in SQLite
+4. Use filters (price, beds, baths, sq ft, source) to narrow results
+5. Click "Refresh listings" to trigger a manual re-scrape
+6. Listings are automatically re-scraped every 12 hours (configurable via `SCRAPE_INTERVAL_HOURS` env var)
+
+#### Environment Variables (Backend)
+
+| Variable | Default | Description |
+|---|---|---|
+| `DB_PATH` | `backend/data/listings.db` | Path to the SQLite database file |
+| `SCRAPE_INTERVAL_HOURS` | `12` | Hours between automatic background scrapes |
+| `ALLOWED_ORIGINS` | `http://localhost:5173,...` | Comma-separated CORS origins |
 
 ### Building for Production
 To create a production build:
@@ -123,13 +133,23 @@ After deploying frontend, go back to Railway and update:
 ```
 pj03-housing-manager/
 ├── backend/                 # Python backend (FastAPI + Playwright)
-│   ├── main.py             # API server with scrape endpoints
+│   ├── main.py             # API server with scrape + listing endpoints
+│   ├── database.py         # SQLite operations (init, upsert, query)
+│   ├── scheduler.py        # Background scrape loop (runs every 12h)
 │   ├── requirements.txt    # Python dependencies
+│   ├── Dockerfile          # Docker build with data volume
+│   ├── data/               # SQLite database (auto-created)
+│   │   └── listings.db
 │   └── scrapers/           # Site-specific scrapers
-│       └── meridian.py     # Meridian Group Real Estate scraper
+│       ├── meridian.py     # Meridian Group Real Estate
+│       ├── solis.py        # Solis Isla Vista
+│       ├── Koto.py         # Koto Group
+│       ├── playalife.py    # PlayaLife IV
+│       └── wolfe_scraper.py # Wolfe & Associates
 ├── src/                    # React frontend
 │   ├── App.jsx             # Main app with scraper UI
 │   └── components/         # React components
+│       ├── AllListingsSection/ # Browse all listings with filters
 │       ├── ListingCard.jsx # Individual listing display
 │       └── ListingList.jsx # Listings grid container
 └── package.json            # Node.js dependencies

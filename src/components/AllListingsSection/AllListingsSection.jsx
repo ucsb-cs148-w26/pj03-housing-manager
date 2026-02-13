@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import ListingList from '../ListingList';
 import './AllListingsSection.css';
 
@@ -27,21 +27,38 @@ function AllListingsSection() {
   const [sqftMax, setSqftMax] = useState('');
   const [sources, setSources] = useState([]); // empty = all
 
-  const handleLoadAll = async () => {
+  const loadListings = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/scrape/all`);
+      const response = await fetch(`${API_URL}/listings`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       setAllListings(data.listings || []);
-      setLastScraped(data.scraped_at);
+      setLastScraped(data.last_updated);
     } catch (err) {
       setError(err.message || 'Failed to load listings');
     } finally {
       setLoading(false);
     }
   };
+
+  const handleRefresh = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/listings/refresh`, { method: 'POST' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      await loadListings();
+    } catch (err) {
+      setError(err.message || 'Failed to refresh listings');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadListings();
+  }, []);
 
   const filteredListings = useMemo(() => {
     return allListings.filter((listing) => {
@@ -123,14 +140,21 @@ function AllListingsSection() {
         <div className="all-listings-actions">
           <button
             className="all-listings-load-btn"
-            onClick={handleLoadAll}
+            onClick={loadListings}
             disabled={loading}
           >
-            {loading ? 'Loading all listings…' : 'Load all listings'}
+            {loading ? 'Loading…' : 'Reload listings'}
+          </button>
+          <button
+            className="all-listings-scrape-btn"
+            onClick={handleRefresh}
+            disabled={loading}
+          >
+            {loading ? 'Scraping…' : 'Re-scrape all sources'}
           </button>
           {lastScraped && (
             <span className="all-listings-meta">
-              Loaded: {new Date(lastScraped).toLocaleString()}
+              Last updated: {new Date(lastScraped).toLocaleString()}
             </span>
           )}
         </div>
@@ -251,7 +275,7 @@ function AllListingsSection() {
           error={null}
           emptyMessage={
             allListings.length === 0
-              ? 'Click "Load all listings" to fetch from every company.'
+              ? 'No listings yet. Click "Refresh listings" to scrape from every company.'
               : 'No listings match your filters. Try adjusting or clear filters.'
           }
         />

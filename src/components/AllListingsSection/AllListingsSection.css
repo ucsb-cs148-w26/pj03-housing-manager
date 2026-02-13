@@ -48,6 +48,27 @@
   cursor: not-allowed;
 }
 
+.all-listings-scrape-btn {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.all-listings-scrape-btn:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: white;
+}
+
+.all-listings-scrape-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .all-listings-meta {
   color: var(--color-text-light);
   font-size: 14px;

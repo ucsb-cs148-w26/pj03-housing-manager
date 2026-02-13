@@ -151,3 +151,37 @@ The AI was highly effective for this feature implementation. It handled both the
 
 ### Ensuring Correctness, Clarity, and Fair Use
 The implementation was tested by running the application locally and verifying that the toggle correctly switched between dark and light themes across all relevant components. UI behavior was checked to ensure styles updated consistently and no elements were visually broken in either mode. The generated code was reviewed to confirm clarity, maintainability, and proper separation of concerns before final integration.
+
+## Alex Yoon
+
+### Experiment Description
+  I used AI to plan and implement a SQLite database layer for our housing manager app. Previously, the app scraped rental listings
+  live on every page load, which was slow and redundant. I wanted to add a database so listings would be scraped in the background 
+  and served instantly, but I wasn't sure how to structure it within our existing async FastAPI backend and React frontend. I used
+  Claude Code to analyze our codebase — the existing scraper modules, API endpoints, and frontend components — and help me plan an
+  implementation that fit naturally into our project's architecture.
+
+### Outcomes
+The AI helped me build a complete database-backed flow: a SQLite database layer with async read/write operations, a background
+  scheduler that scrapes all five sources on a 12-hour interval and stores results via upsert, two new API endpoints (GET /listings
+   for instant DB reads, POST /listings/refresh for manual re-scrapes), and FastAPI lifespan integration to initialize the DB and
+  scheduler on startup. It also updated the Dockerfile for Railway deployment and separated the frontend into two buttons — "Reload
+   listings" (instant DB read) and "Re-scrape all sources" (triggers actual scraping). Beyond implementation, the AI helped debug a
+   tricky deployment issue where a Docker container was shadowing the local server on IPv6, causing CORS failures that only
+  appeared in the browser but not in curl.
+
+### Reflections on Usefulness
+The AI was most useful as a planning and implementation partner. I had a clear goal — decouple scraping from serving with a
+  database — but needed help figuring out the best way to wire it into our existing code. Claude analyzed our project structure and
+   suggested an approach consistent with what we already had, like using aiosqlite since our backend was already async, and
+  structuring the upsert logic around our existing scraper output format so no other code needed to change. The debugging was also
+  valuable — tracing the CORS issue to a Docker port conflict across IPv4/IPv6 would have taken much longer on my own. Going
+  forward, this kind of tool is most useful when I know what I want to build but need help fitting it into an existing codebase.
+
+### Ensuring Correctness, Clarity, and Fair Use
+I tested the endpoints with curl and verified proper CORS headers, response data, and database contents by querying SQLite
+  directly. I ran refresh multiple times to confirm upserts didn't create duplicate rows, and checked browser DevTools to confirm
+  the frontend was hitting the correct DB-backed endpoint. I also caught cases where the AI's initial diagnosis was wrong and
+  pushed back to debug further. I had Claude explain the full architecture — scheduler writes to DB, API reads from DB, frontend
+  displays — so I could understand and maintain every piece myself. The code was generated specifically for our project's patterns
+  and structure, and all architectural decisions were made by me with the AI helping execute them.
