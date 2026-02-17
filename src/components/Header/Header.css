@@ -49,7 +49,28 @@
 .header-actions {
   display: flex;
   align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
   gap: var(--spacing-xs);
+}
+
+.header-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.header-user-name {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .header-login-btn {

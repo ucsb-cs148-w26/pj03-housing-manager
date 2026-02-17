@@ -1,13 +1,45 @@
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import { handleCredentialResponse, signOut, getCurrentUser } from '../../utils/auth';
 import './Header.css';
 
 function Header() {
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const [user, setUser] = useState(getCurrentUser);
+  const googleBtnRef = useRef(null);
+
+  const onCredentialResponse = useCallback((response) => {
+    const loggedInUser = handleCredentialResponse(response);
+    if (loggedInUser) {
+      setUser(loggedInUser);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user || !window.google) return;
+
+    window.google.accounts.id.initialize({
+      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+      callback: onCredentialResponse,
+    });
+
+    if (googleBtnRef.current) {
+      window.google.accounts.id.renderButton(googleBtnRef.current, {
+        theme: 'outline',
+        size: 'medium',
+      });
+    }
+  }, [user, onCredentialResponse]);
+
+  const handleLogout = () => {
+    signOut();
+    setUser(null);
+  };
 
   const handleNavClick = (e, targetId) => {
-    if (!isHome) return; // Let the <a href> navigate to /#section
+    if (!isHome) return;
     e.preventDefault();
     const element = document.getElementById(targetId);
     if (element) {
@@ -62,7 +94,24 @@ function Header() {
         </ul>
         <div className="header-actions">
           <ThemeToggle />
-          <button className="header-login-btn">Login</button>
+          {user ? (
+            <div className="header-user">
+              {user.picture && (
+                <img
+                  src={user.picture}
+                  alt={user.name}
+                  className="header-user-avatar"
+                  referrerPolicy="no-referrer"
+                />
+              )}
+              <span className="header-user-name">{user.name}</span>
+              <button className="header-login-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div ref={googleBtnRef}></div>
+          )}
         </div>
       </nav>
     </header>
