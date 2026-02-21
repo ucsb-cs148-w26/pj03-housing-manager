@@ -6,6 +6,7 @@
 .all-listings-content {
   max-width: var(--max-width);
   margin: 0 auto;
+  text-align: center;
 }
 
 .all-listings-title {
@@ -26,6 +27,7 @@
   gap: 16px;
   margin-bottom: 24px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .all-listings-load-btn {
@@ -96,6 +98,7 @@
   gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 12px;
+  justify-content: center;
 }
 
 .filters-row:last-of-type {
