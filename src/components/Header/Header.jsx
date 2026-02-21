@@ -17,6 +17,15 @@ function Header() {
     }
   }, []);
 
+  // When user is signed in, cancel any Google One Tap prompt so "Sign in with Google" doesn't stay visible
+  useEffect(() => {
+    if (!user || typeof window === 'undefined' || !window.google?.accounts?.id) return;
+    try {
+      window.google.accounts.id.cancel();
+      window.google.accounts.id.disableAutoSelect?.();
+    } catch (_) {}
+  }, [user]);
+
   useEffect(() => {
     if (user || !window.google) return;
 
