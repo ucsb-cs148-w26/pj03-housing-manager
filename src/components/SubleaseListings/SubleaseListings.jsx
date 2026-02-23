@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './SubleaseListings.css';
 
 function SubleaseListings() {
@@ -16,17 +16,73 @@ function SubleaseListings() {
     description: '',
   });
 
+  // Validation & feedback state
+  const [formErrors, setFormErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [commentErrors, setCommentErrors] = useState({});
+  const [commentSuccess, setCommentSuccess] = useState({});
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  // Auto-dismiss success messages
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  const clearCommentSuccess = useCallback((postId) => {
+    setCommentSuccess(prev => {
+      const next = { ...prev };
+      delete next[postId];
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    const timers = Object.keys(commentSuccess).map(postId => {
+      return setTimeout(() => clearCommentSuccess(postId), 3000);
+    });
+    return () => timers.forEach(t => clearTimeout(t));
+  }, [commentSuccess, clearCommentSuccess]);
+
+  function validateForm() {
+    const errors = {};
+    if (!form.title.trim()) errors.title = 'Title is required.';
+    if (!form.location.trim()) errors.location = 'Location is required.';
+    if (!form.rent.trim()) {
+      errors.rent = 'Rent is required.';
+    } else if (isNaN(form.rent) || Number(form.rent) <= 0) {
+      errors.rent = 'Rent must be a positive number.';
+    }
+    if (!form.dates.trim()) errors.dates = 'Available dates are required.';
+    if (!form.description.trim()) errors.description = 'Description is required.';
+    return errors;
+  }
+
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
+    // Clear error for this field on change
+    if (formErrors[e.target.name]) {
+      setFormErrors({ ...formErrors, [e.target.name]: undefined });
+    }
   }
 
   function handleSubmit(e) {
     e.preventDefault();
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
     const newPost = { ...form, id: Date.now() };
     setPosts([newPost, ...posts]);
     setComments({ ...comments, [newPost.id]: [] });
     setForm({ title: '', location: '', rent: '', dates: '', description: '' });
+    setFormErrors({});
     setShowForm(false);
+    setSuccessMessage('Listing posted successfully!');
   }
 
   function toggleComments(postId) {
@@ -41,13 +97,20 @@ function SubleaseListings() {
       ...commentForms,
       [postId]: value
     });
+    // Clear comment error on typing
+    if (commentErrors[postId]) {
+      setCommentErrors({ ...commentErrors, [postId]: undefined });
+    }
   }
 
   function handleCommentSubmit(e, postId) {
     e.preventDefault();
     const commentText = commentForms[postId]?.trim();
-    
-    if (!commentText) return;
+
+    if (!commentText) {
+      setCommentErrors({ ...commentErrors, [postId]: 'Comment cannot be empty.' });
+      return;
+    }
 
     const newComment = {
       id: Date.now(),
@@ -65,13 +128,27 @@ function SubleaseListings() {
       ...commentForms,
       [postId]: ''
     });
+
+    setCommentErrors({ ...commentErrors, [postId]: undefined });
+    setCommentSuccess({ ...commentSuccess, [postId]: true });
   }
 
-  function deleteComment(postId, commentId) {
+  function handleDeleteClick(postId, commentId) {
+    setDeleteConfirm({ postId, commentId });
+  }
+
+  function confirmDelete() {
+    if (!deleteConfirm) return;
+    const { postId, commentId } = deleteConfirm;
     setComments({
       ...comments,
       [postId]: comments[postId].filter(c => c.id !== commentId)
     });
+    setDeleteConfirm(null);
+  }
+
+  function cancelDelete() {
+    setDeleteConfirm(null);
   }
 
   return (
@@ -81,6 +158,12 @@ function SubleaseListings() {
         <p className="sublease-subtitle">
           Find short-term housing or post your own sublease
         </p>
+
+        {successMessage && (
+          <div className="sublease-success" role="status">
+            {successMessage}
+          </div>
+        )}
 
         <div className="sublease-button-wrapper">
           <button
@@ -92,46 +175,61 @@ function SubleaseListings() {
         </div>
 
         {showForm && (
-          <form className="sublease-form" onSubmit={handleSubmit}>
-            <input
-              name="title"
-              placeholder="Title (Ex: Room near campus)"
-              value={form.title}
-              onChange={handleChange}
-              required
-            />
+          <form className="sublease-form" onSubmit={handleSubmit} noValidate>
+            <div className="form-field">
+              <input
+                name="title"
+                placeholder="Title (Ex: Room near campus)"
+                value={form.title}
+                onChange={handleChange}
+                className={formErrors.title ? 'input-error' : ''}
+              />
+              {formErrors.title && <span className="field-error">{formErrors.title}</span>}
+            </div>
 
-            <input
-              name="location"
-              placeholder="Location"
-              value={form.location}
-              onChange={handleChange}
-              required
-            />
+            <div className="form-field">
+              <input
+                name="location"
+                placeholder="Location"
+                value={form.location}
+                onChange={handleChange}
+                className={formErrors.location ? 'input-error' : ''}
+              />
+              {formErrors.location && <span className="field-error">{formErrors.location}</span>}
+            </div>
 
-            <input
-              name="rent"
-              placeholder="Monthly Rent ($)"
-              value={form.rent}
-              onChange={handleChange}
-              required
-            />
+            <div className="form-field">
+              <input
+                name="rent"
+                placeholder="Monthly Rent ($)"
+                value={form.rent}
+                onChange={handleChange}
+                className={formErrors.rent ? 'input-error' : ''}
+              />
+              {formErrors.rent && <span className="field-error">{formErrors.rent}</span>}
+            </div>
 
-            <input
-              name="dates"
-              placeholder="Available dates"
-              value={form.dates}
-              onChange={handleChange}
-              required
-            />
+            <div className="form-field">
+              <input
+                name="dates"
+                placeholder="Available dates"
+                value={form.dates}
+                onChange={handleChange}
+                className={formErrors.dates ? 'input-error' : ''}
+              />
+              {formErrors.dates && <span className="field-error">{formErrors.dates}</span>}
+            </div>
 
-            <textarea
-              name="description"
-              placeholder="Description"
-              value={form.description}
-              onChange={handleChange}
-              required
-            />
+            <div className="form-field">
+              <textarea
+                name="description"
+                placeholder="Description"
+                value={form.description}
+                onChange={handleChange}
+                className={formErrors.description ? 'input-error' : ''}
+              />
+              {formErrors.description && <span className="field-error">{formErrors.description}</span>}
+            </div>
 
             <button type="submit">Post Listing</button>
           </form>
@@ -159,7 +257,7 @@ function SubleaseListings() {
               </div>
 
               <div className="comments-section">
-                <button 
+                <button
                   className="comments-toggle-btn"
                   onClick={() => toggleComments(post.id)}
                   aria-expanded={expandedComments[post.id]}
@@ -173,20 +271,28 @@ function SubleaseListings() {
 
                 {expandedComments[post.id] && (
                   <div className="comments-container" data-testid={`comments-container-${post.id}`}>
-                    <form 
+                    <form
                       className="comment-form"
                       onSubmit={(e) => handleCommentSubmit(e, post.id)}
                     >
-                      <input
-                        type="text"
-                        className="comment-input"
-                        placeholder="Add a comment..."
-                        value={commentForms[post.id] || ''}
-                        onChange={(e) => handleCommentChange(post.id, e.target.value)}
-                        data-testid={`comment-input-${post.id}`}
-                      />
-                      <button 
-                        type="submit" 
+                      <div className="comment-input-wrapper">
+                        <input
+                          type="text"
+                          className={`comment-input${commentErrors[post.id] ? ' input-error' : ''}`}
+                          placeholder="Add a comment..."
+                          value={commentForms[post.id] || ''}
+                          onChange={(e) => handleCommentChange(post.id, e.target.value)}
+                          data-testid={`comment-input-${post.id}`}
+                        />
+                        {commentErrors[post.id] && (
+                          <span className="comment-error">{commentErrors[post.id]}</span>
+                        )}
+                        {commentSuccess[post.id] && (
+                          <span className="comment-success" role="status">Comment posted!</span>
+                        )}
+                      </div>
+                      <button
+                        type="submit"
                         className="comment-submit-btn"
                         data-testid={`comment-submit-${post.id}`}
                       >
@@ -206,14 +312,34 @@ function SubleaseListings() {
                             </div>
                             <div className="comment-text">{comment.text}</div>
                             {comment.author === 'SexyJesusFreak' && (
-                              <button 
-                                className="comment-delete-btn"
-                                onClick={() => deleteComment(post.id, comment.id)}
-                                data-testid={`delete-comment-${comment.id}`}
-                                aria-label="Delete comment"
-                              >
-                                🗑️ Delete
-                              </button>
+                              deleteConfirm?.commentId === comment.id ? (
+                                <div className="delete-confirm">
+                                  <span>Are you sure?</span>
+                                  <button
+                                    className="delete-confirm-btn"
+                                    onClick={confirmDelete}
+                                    data-testid={`confirm-delete-${comment.id}`}
+                                  >
+                                    Confirm
+                                  </button>
+                                  <button
+                                    className="delete-cancel-btn"
+                                    onClick={cancelDelete}
+                                    data-testid={`cancel-delete-${comment.id}`}
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  className="comment-delete-btn"
+                                  onClick={() => handleDeleteClick(post.id, comment.id)}
+                                  data-testid={`delete-comment-${comment.id}`}
+                                  aria-label="Delete comment"
+                                >
+                                  🗑️ Delete
+                                </button>
+                              )
                             )}
                           </div>
                         ))

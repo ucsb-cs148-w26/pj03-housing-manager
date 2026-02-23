@@ -294,3 +294,103 @@
   background-color: #d32f2f;
   color: white;
 }
+
+/* Form field wrapper */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Inline validation error text */
+.field-error {
+  color: #d32f2f;
+  font-size: 12px;
+  text-align: left;
+}
+
+/* Red border on invalid inputs */
+.sublease-form input.input-error,
+.sublease-form textarea.input-error {
+  border-color: #d32f2f;
+}
+
+/* Success banner for listing posted */
+.sublease-success {
+  background-color: var(--color-success, #2e7d32);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 600px;
+  margin: 16px auto;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Comment input wrapper for stacking error/success below input */
+.comment-input-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Comment error text */
+.comment-error {
+  color: #d32f2f;
+  font-size: 12px;
+  text-align: left;
+}
+
+/* Red border on invalid comment input */
+.comment-input.input-error {
+  border-color: #d32f2f;
+}
+
+/* Comment success text */
+.comment-success {
+  color: var(--color-success, #2e7d32);
+  font-size: 12px;
+  text-align: left;
+}
+
+/* Delete confirmation inline */
+.delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+.delete-confirm-btn {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.delete-confirm-btn:hover {
+  background-color: #b71c1c;
+}
+
+.delete-cancel-btn {
+  background-color: transparent;
+  border: 1px solid var(--color-border, #ccc);
+  color: var(--color-text, #333);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.delete-cancel-btn:hover {
+  background-color: var(--color-border, #e0e0e0);
+}
