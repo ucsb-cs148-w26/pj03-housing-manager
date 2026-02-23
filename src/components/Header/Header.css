@@ -23,12 +23,16 @@
   font-size: var(--font-size-xl);
   font-weight: 700;
   color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .header-links {
   display: flex;
   list-style: none;
   gap: var(--spacing-md);
+  flex: 1;
+  justify-content: center;
+  min-width: 0;
 }
 
 .header-links a {
@@ -50,6 +54,8 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .header-user {
