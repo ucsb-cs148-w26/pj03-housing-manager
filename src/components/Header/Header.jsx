@@ -13,6 +13,7 @@ function Header() {
   const onCredentialResponse = useCallback((response) => {
     const loggedInUser = handleCredentialResponse(response);
     if (loggedInUser) {
+      try { window.google?.accounts?.id?.cancel(); } catch (_) {}
       setUser(loggedInUser);
     }
   }, []);
