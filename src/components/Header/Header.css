@@ -14,9 +14,10 @@
   margin: 0 auto;
   height: 100%;
   padding: 0 var(--spacing-md);
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--spacing-sm);
 }
 
 .header-brand {
@@ -30,10 +31,7 @@
   display: flex;
   list-style: none;
   gap: var(--spacing-sm);
-  flex: 1;
   justify-content: center;
-  min-width: 0;
-  overflow: hidden;
 }
 
 .header-links a {
