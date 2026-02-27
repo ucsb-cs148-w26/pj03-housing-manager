@@ -17,13 +17,21 @@ function Header() {
     }
   }, []);
 
-  // When user is signed in, cancel any Google One Tap prompt so "Sign in with Google" doesn't stay visible
+  // When user is signed in, aggressively cancel any Google One Tap prompt
   useEffect(() => {
-    if (!user || typeof window === 'undefined' || !window.google?.accounts?.id) return;
-    try {
-      window.google.accounts.id.cancel();
-      window.google.accounts.id.disableAutoSelect?.();
-    } catch (_) {}
+    if (!user) return;
+    const cancel = () => {
+      if (window.google?.accounts?.id) {
+        try {
+          window.google.accounts.id.cancel();
+          window.google.accounts.id.disableAutoSelect?.();
+        } catch (_) {}
+      }
+    };
+    cancel();
+    // Also cancel once the Google script finishes loading (race condition safety)
+    window.addEventListener('load', cancel);
+    return () => window.removeEventListener('load', cancel);
   }, [user]);
 
   useEffect(() => {
@@ -32,6 +40,7 @@ function Header() {
     window.google.accounts.id.initialize({
       client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
       callback: onCredentialResponse,
+      auto_select: false,
     });
 
     if (googleBtnRef.current) {
