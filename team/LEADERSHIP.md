@@ -9,11 +9,11 @@
 
 
 
-*Product Owner: Alex J.
-*Scrum Master: Alex Y.
-*Testing/QA Coordinator: Bryce
-*Retro 3 leader: Nathan
-*Design Document Coordinator: Om
-*Deployment Document Coordinator: Timothy
-*User Manual Coordinator: Jeffrey
-*Final presentation leader: Kyle
+* Product Owner: Alex J.
+* Scrum Master: Alex Y.
+* Testing/QA Coordinator: Bryce
+* Retro 3 leader: Nathan
+* Design Document Coordinator: Om
+* Deployment Document Coordinator: Timothy
+* User Manual Coordinator: Jeffrey
+* Final presentation leader: Kyle
