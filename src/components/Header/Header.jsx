@@ -16,6 +16,7 @@ function Header() {
     if (loggedInUser) {
       try { window.google?.accounts?.id?.cancel(); } catch (_) {}
       flushSync(() => setUser(loggedInUser));
+      window.dispatchEvent(new CustomEvent('auth-change', { detail: loggedInUser }));
     }
   }, []);
 
@@ -56,6 +57,7 @@ function Header() {
   const handleLogout = () => {
     signOut();
     setUser(null);
+    window.dispatchEvent(new CustomEvent('auth-change', { detail: null }));
   };
 
   const handleNavClick = (e, targetId) => {
