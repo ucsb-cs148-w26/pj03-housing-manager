@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import { handleCredentialResponse, signOut, getCurrentUser } from '../../utils/auth';
@@ -14,7 +15,7 @@ function Header() {
     const loggedInUser = handleCredentialResponse(response);
     if (loggedInUser) {
       try { window.google?.accounts?.id?.cancel(); } catch (_) {}
-      setUser(loggedInUser);
+      flushSync(() => setUser(loggedInUser));
     }
   }, []);
 
