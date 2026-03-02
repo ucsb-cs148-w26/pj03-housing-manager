@@ -4,10 +4,10 @@ import './SubleaseListings.css';
 function SubleaseListings() {
   const [posts, setPosts] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [images, setImages] = useState([]);
   const [expandedComments, setExpandedComments] = useState({});
   const [commentForms, setCommentForms] = useState({});
   const [comments, setComments] = useState({});
-
   const [form, setForm] = useState({
     title: '',
     location: '',
@@ -16,14 +16,12 @@ function SubleaseListings() {
     description: '',
   });
 
-  // Validation & feedback state
   const [formErrors, setFormErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState(null);
   const [commentErrors, setCommentErrors] = useState({});
   const [commentSuccess, setCommentSuccess] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  // Auto-dismiss success messages
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => setSuccessMessage(null), 3000);
@@ -57,14 +55,23 @@ function SubleaseListings() {
     }
     if (!form.dates.trim()) errors.dates = 'Available dates are required.';
     if (!form.description.trim()) errors.description = 'Description is required.';
+    if (images.length === 0) errors.images = 'At least one photo is required.';
     return errors;
   }
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
-    // Clear error for this field on change
     if (formErrors[e.target.name]) {
       setFormErrors({ ...formErrors, [e.target.name]: undefined });
+    }
+  }
+
+  function handleImageChange(e) {
+    const files = Array.from(e.target.files);
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImages(previews);
+    if (formErrors.images) {
+      setFormErrors({ ...formErrors, images: undefined });
     }
   }
 
@@ -76,28 +83,22 @@ function SubleaseListings() {
       return;
     }
 
-    const newPost = { ...form, id: Date.now() };
+    const newPost = { ...form, images, id: Date.now() };
     setPosts([newPost, ...posts]);
     setComments({ ...comments, [newPost.id]: [] });
     setForm({ title: '', location: '', rent: '', dates: '', description: '' });
+    setImages([]);
     setFormErrors({});
     setShowForm(false);
     setSuccessMessage('Listing posted successfully!');
   }
 
   function toggleComments(postId) {
-    setExpandedComments({
-      ...expandedComments,
-      [postId]: !expandedComments[postId]
-    });
+    setExpandedComments({ ...expandedComments, [postId]: !expandedComments[postId] });
   }
 
   function handleCommentChange(postId, value) {
-    setCommentForms({
-      ...commentForms,
-      [postId]: value
-    });
-    // Clear comment error on typing
+    setCommentForms({ ...commentForms, [postId]: value });
     if (commentErrors[postId]) {
       setCommentErrors({ ...commentErrors, [postId]: undefined });
     }
@@ -106,29 +107,18 @@ function SubleaseListings() {
   function handleCommentSubmit(e, postId) {
     e.preventDefault();
     const commentText = commentForms[postId]?.trim();
-
     if (!commentText) {
       setCommentErrors({ ...commentErrors, [postId]: 'Comment cannot be empty.' });
       return;
     }
-
     const newComment = {
       id: Date.now(),
       text: commentText,
-      author: 'SexyJesusFreak', // Current user
+      author: 'SexyJesusFreak',
       timestamp: new Date().toLocaleString()
     };
-
-    setComments({
-      ...comments,
-      [postId]: [...(comments[postId] || []), newComment]
-    });
-
-    setCommentForms({
-      ...commentForms,
-      [postId]: ''
-    });
-
+    setComments({ ...comments, [postId]: [...(comments[postId] || []), newComment] });
+    setCommentForms({ ...commentForms, [postId]: '' });
     setCommentErrors({ ...commentErrors, [postId]: undefined });
     setCommentSuccess({ ...commentSuccess, [postId]: true });
   }
@@ -140,10 +130,7 @@ function SubleaseListings() {
   function confirmDelete() {
     if (!deleteConfirm) return;
     const { postId, commentId } = deleteConfirm;
-    setComments({
-      ...comments,
-      [postId]: comments[postId].filter(c => c.id !== commentId)
-    });
+    setComments({ ...comments, [postId]: comments[postId].filter(c => c.id !== commentId) });
     setDeleteConfirm(null);
   }
 
@@ -231,6 +218,27 @@ function SubleaseListings() {
               {formErrors.description && <span className="field-error">{formErrors.description}</span>}
             </div>
 
+            {/* IMAGE UPLOAD */}
+            <div className="form-field">
+              <label className="image-upload-label">
+                Photos (required)
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                />
+              </label>
+              {formErrors.images && <span className="field-error">{formErrors.images}</span>}
+              {images.length > 0 && (
+                <div className="image-preview-grid">
+                  {images.map((src, i) => (
+                    <img key={i} src={src} alt={`preview-${i}`} className="image-preview" />
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button type="submit">Post Listing</button>
           </form>
         )}
@@ -241,20 +249,23 @@ function SubleaseListings() {
               <p>🏠 No subleases yet — be the first to post!</p>
             </div>
           )}
-
           {posts.map(post => (
             <div className="sublease-card" key={post.id}>
+              {/* IMAGE DISPLAY */}
+              {post.images?.length > 0 && (
+                <div className="card-image-grid">
+                  {post.images.map((src, i) => (
+                    <img key={i} src={src} alt={`listing-${i}`} className="card-image" />
+                  ))}
+                </div>
+              )}
               <div className="sublease-card-header">
                 <span className="sublease-tag">Sublease</span>
                 <span className="sublease-price">${post.rent}/mo</span>
               </div>
-
               <div className="sublease-location">{post.location}</div>
               <div className="sublease-dates">{post.dates}</div>
-
-              <div className="sublease-description">
-                {post.description}
-              </div>
+              <div className="sublease-description">{post.description}</div>
 
               <div className="comments-section">
                 <button
@@ -271,10 +282,7 @@ function SubleaseListings() {
 
                 {expandedComments[post.id] && (
                   <div className="comments-container" data-testid={`comments-container-${post.id}`}>
-                    <form
-                      className="comment-form"
-                      onSubmit={(e) => handleCommentSubmit(e, post.id)}
-                    >
+                    <form className="comment-form" onSubmit={(e) => handleCommentSubmit(e, post.id)}>
                       <div className="comment-input-wrapper">
                         <input
                           type="text"
@@ -291,11 +299,7 @@ function SubleaseListings() {
                           <span className="comment-success" role="status">Comment posted!</span>
                         )}
                       </div>
-                      <button
-                        type="submit"
-                        className="comment-submit-btn"
-                        data-testid={`comment-submit-${post.id}`}
-                      >
+                      <button type="submit" className="comment-submit-btn" data-testid={`comment-submit-${post.id}`}>
                         Post
                       </button>
                     </form>
@@ -315,28 +319,11 @@ function SubleaseListings() {
                               deleteConfirm?.commentId === comment.id ? (
                                 <div className="delete-confirm">
                                   <span>Are you sure?</span>
-                                  <button
-                                    className="delete-confirm-btn"
-                                    onClick={confirmDelete}
-                                    data-testid={`confirm-delete-${comment.id}`}
-                                  >
-                                    Confirm
-                                  </button>
-                                  <button
-                                    className="delete-cancel-btn"
-                                    onClick={cancelDelete}
-                                    data-testid={`cancel-delete-${comment.id}`}
-                                  >
-                                    Cancel
-                                  </button>
+                                  <button className="delete-confirm-btn" onClick={confirmDelete} data-testid={`confirm-delete-${comment.id}`}>Confirm</button>
+                                  <button className="delete-cancel-btn" onClick={cancelDelete} data-testid={`cancel-delete-${comment.id}`}>Cancel</button>
                                 </div>
                               ) : (
-                                <button
-                                  className="comment-delete-btn"
-                                  onClick={() => handleDeleteClick(post.id, comment.id)}
-                                  data-testid={`delete-comment-${comment.id}`}
-                                  aria-label="Delete comment"
-                                >
+                                <button className="comment-delete-btn" onClick={() => handleDeleteClick(post.id, comment.id)} data-testid={`delete-comment-${comment.id}`} aria-label="Delete comment">
                                   🗑️ Delete
                                 </button>
                               )
