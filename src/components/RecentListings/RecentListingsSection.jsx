@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ListingCard from './ListingCard';
+import { getCurrentUser } from '../../utils/auth';
 import './RecentListingsSection.css';
 
 /**
@@ -23,6 +24,13 @@ const placeholderListings = [
 
 function RecentListingsSection({ listings = placeholderListings }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [user, setUser] = useState(getCurrentUser);
+
+  useEffect(() => {
+    const handleAuthChange = (e) => setUser(e.detail);
+    window.addEventListener('auth-change', handleAuthChange);
+    return () => window.removeEventListener('auth-change', handleAuthChange);
+  }, []);
   const visibleCards = 3;
   const totalListings = listings.length;
 
@@ -85,7 +93,7 @@ function RecentListingsSection({ listings = placeholderListings }) {
           </button>
         </div>
 
-        <p className="listings-note">Login to save listings and contact landlords</p>
+        {!user && <p className="listings-note">Login to save listings and contact landlords</p>}
       </div>
     </section>
   );
