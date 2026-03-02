@@ -20,21 +20,20 @@ function Header() {
     }
   }, []);
 
-  // When user is signed in, aggressively cancel any Google One Tap prompt
+  // When user is signed in, cancel Google prompts and remove any lingering Google iframes
   useEffect(() => {
     if (!user) return;
-    const cancel = () => {
-      if (window.google?.accounts?.id) {
-        try {
-          window.google.accounts.id.cancel();
-          window.google.accounts.id.disableAutoSelect?.();
-        } catch (_) {}
+    try {
+      window.google?.accounts?.id?.cancel();
+      window.google?.accounts?.id?.disableAutoSelect?.();
+    } catch (_) {}
+    // Google's renderButton appends its iframe to document.body outside React's tree.
+    // Remove it manually so it doesn't persist after login.
+    document.querySelectorAll('iframe').forEach(iframe => {
+      if (iframe.src?.includes('accounts.google.com')) {
+        (iframe.parentElement || iframe).remove();
       }
-    };
-    cancel();
-    // Also cancel once the Google script finishes loading (race condition safety)
-    window.addEventListener('load', cancel);
-    return () => window.removeEventListener('load', cancel);
+    });
   }, [user]);
 
   useEffect(() => {
