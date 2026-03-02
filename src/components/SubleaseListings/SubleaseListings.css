@@ -4,14 +4,11 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
-
 .sublease-content {
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
 }
-
-/* Reuse your marketplace card style */
 .sublease-card {
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -19,14 +16,12 @@
   background: var(--color-card-bg);
   box-shadow: 0 2px 4px var(--color-shadow);
 }
-
 .sublease-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
 }
-
 .sublease-tag {
   background: var(--color-info-bg);
   color: var(--color-info);
@@ -35,35 +30,28 @@
   font-size: 12px;
   font-weight: 500;
 }
-
 .sublease-price {
   font-size: 18px;
   font-weight: 700;
   color: var(--color-success);
 }
-
 .sublease-location {
   margin: 8px 0;
   font-size: 16px;
   color: var(--color-text);
   font-weight: 500;
 }
-
 .sublease-dates {
   font-size: 14px;
   color: var(--color-text-light);
   margin-bottom: 6px;
 }
-
 .sublease-description {
   font-size: 14px;
   color: var(--color-text-light);
   line-height: 1.4;
   margin-bottom: 12px;
 }
-
-/* Form polish */
-
 .sublease-form {
   background: var(--color-card-bg);
   margin: 30px auto;
@@ -75,7 +63,6 @@
   flex-direction: column;
   gap: 12px;
 }
-
 .sublease-form input,
 .sublease-form textarea {
   padding: 12px;
@@ -85,19 +72,16 @@
   background: var(--color-input-bg);
   color: var(--color-text);
 }
-
 .sublease-form input:focus,
 .sublease-form textarea:focus {
   outline: none;
   border-color: var(--color-primary);
 }
-
 .sublease-button-wrapper {
   display: flex;
   justify-content: center;
   margin-top: 10px;
 }
-
 .post-sublease-btn {
   background-color: var(--color-primary);
   color: white;
@@ -110,12 +94,10 @@
   box-shadow: 0 2px 4px var(--color-shadow-hover);
   transition: background 0.2s ease, transform 0.1s ease;
 }
-
 .post-sublease-btn:hover {
   background-color: var(--color-primary-hover);
   transform: translateY(-1px);
 }
-
 .sublease-placeholder {
   background: var(--color-card-bg);
   border-radius: 12px;
@@ -123,7 +105,6 @@
   margin-bottom: 30px;
   box-shadow: 0 2px 8px var(--color-shadow);
 }
-
 .sublease-placeholder p {
   font-size: 1.2rem;
   color: var(--color-text-light);
@@ -131,13 +112,11 @@
 }
 
 /* Comments Section Styles */
-
 .comments-section {
   margin-top: 16px;
   border-top: 1px solid #e0e0e0;
   padding-top: 12px;
 }
-
 .comments-toggle-btn {
   width: 100%;
   background-color: #f5f5f5;
@@ -153,17 +132,14 @@
   align-items: center;
   transition: background-color 0.2s ease;
 }
-
 .comments-toggle-btn:hover {
   background-color: #ececec;
 }
-
 .toggle-icon {
   font-size: 12px;
   margin-left: 8px;
   color: #666;
 }
-
 .comments-container {
   margin-top: 12px;
   background-color: #fafafa;
@@ -171,24 +147,15 @@
   padding: 12px;
   animation: slideDown 0.2s ease-out;
 }
-
 @keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 .comment-form {
   display: flex;
   gap: 8px;
   margin-bottom: 12px;
 }
-
 .comment-input {
   flex: 1;
   padding: 10px 12px;
@@ -197,13 +164,11 @@
   font-size: 14px;
   background-color: white;
 }
-
 .comment-input:focus {
   outline: none;
   border-color: #1976d2;
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
 }
-
 .comment-submit-btn {
   background-color: #1976d2;
   color: white;
@@ -215,17 +180,14 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
 .comment-submit-btn:hover {
   background-color: #1565c0;
 }
-
 .comments-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
 .no-comments {
   text-align: center;
   color: #999;
@@ -233,7 +195,6 @@
   padding: 20px;
   font-style: italic;
 }
-
 .comment {
   background-color: white;
   border: 1px solid #e0e0e0;
@@ -241,36 +202,25 @@
   padding: 12px;
   animation: fadeIn 0.3s ease-out;
 }
-
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 .comment-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 6px;
 }
-
 .comment-author {
   font-weight: 600;
   font-size: 13px;
   color: #1976d2;
 }
-
 .comment-timestamp {
   font-size: 11px;
   color: #999;
 }
-
 .comment-text {
   font-size: 14px;
   color: #333;
@@ -278,7 +228,6 @@
   margin-bottom: 8px;
   word-wrap: break-word;
 }
-
 .comment-delete-btn {
   background-color: transparent;
   border: 1px solid #d32f2f;
@@ -289,33 +238,24 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
 .comment-delete-btn:hover {
   background-color: #d32f2f;
   color: white;
 }
-
-/* Form field wrapper */
 .form-field {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-
-/* Inline validation error text */
 .field-error {
   color: #d32f2f;
   font-size: 12px;
   text-align: left;
 }
-
-/* Red border on invalid inputs */
 .sublease-form input.input-error,
 .sublease-form textarea.input-error {
   border-color: #d32f2f;
 }
-
-/* Success banner for listing posted */
 .sublease-success {
   background-color: var(--color-success, #2e7d32);
   color: white;
@@ -327,35 +267,25 @@
   margin: 16px auto;
   animation: fadeIn 0.3s ease-out;
 }
-
-/* Comment input wrapper for stacking error/success below input */
 .comment-input-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-
-/* Comment error text */
 .comment-error {
   color: #d32f2f;
   font-size: 12px;
   text-align: left;
 }
-
-/* Red border on invalid comment input */
 .comment-input.input-error {
   border-color: #d32f2f;
 }
-
-/* Comment success text */
 .comment-success {
   color: var(--color-success, #2e7d32);
   font-size: 12px;
   text-align: left;
 }
-
-/* Delete confirmation inline */
 .delete-confirm {
   display: flex;
   align-items: center;
@@ -364,7 +294,6 @@
   color: #d32f2f;
   font-weight: 500;
 }
-
 .delete-confirm-btn {
   background-color: #d32f2f;
   color: white;
@@ -375,11 +304,9 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
 .delete-confirm-btn:hover {
   background-color: #b71c1c;
 }
-
 .delete-cancel-btn {
   background-color: transparent;
   border: 1px solid var(--color-border, #ccc);
@@ -390,7 +317,50 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
 .delete-cancel-btn:hover {
   background-color: var(--color-border, #e0e0e0);
+}
+
+/* Image upload input */
+.image-upload-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--color-text);
+  font-weight: 500;
+}
+.image-upload-label input[type="file"] {
+  padding: 8px;
+  border: 1px dashed var(--color-border);
+  border-radius: 6px;
+  background: var(--color-input-bg);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--color-text-light);
+}
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+}
+.image-preview {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+}
+.card-image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.card-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
 }
