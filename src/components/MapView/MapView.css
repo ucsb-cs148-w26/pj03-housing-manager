@@ -1,0 +1,93 @@
+.map-view {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.map-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.map-subtitle {
+  color: var(--text-secondary, #666);
+  margin-bottom: 1.5rem;
+}
+
+.map-container {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.map-loading,
+.map-error {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+}
+
+.map-error {
+  color: #e74c3c;
+}
+
+.map-geocoding-status {
+  color: var(--text-secondary, #666);
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.map-marker-count {
+  margin-top: 0.75rem;
+  color: var(--text-secondary, #666);
+  font-size: 0.9rem;
+}
+
+/* InfoWindow styles */
+.map-info-window {
+  max-width: 250px;
+  font-family: inherit;
+}
+
+.map-info-address {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  color: #333;
+}
+
+.map-info-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin: 0.25rem 0;
+}
+
+.map-info-details {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0.25rem 0;
+}
+
+.map-info-source {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0.25rem 0;
+}
+
+.map-info-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.map-info-link:hover {
+  background: #1d4ed8;
+}

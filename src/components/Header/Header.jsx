@@ -95,6 +95,11 @@ function Header() {
             </a>
           </li>
           <li>
+            <a href={isHome ? '#map' : '/#map'} onClick={(e) => handleNavClick(e, 'map')}>
+              Map
+            </a>
+          </li>
+          <li>
             <a href={isHome ? '#sublease' : '/#sublease'} onClick={(e) => handleNavClick(e, 'sublease')}>
               Sublease
             </a>

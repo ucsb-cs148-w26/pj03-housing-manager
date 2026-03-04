@@ -6,6 +6,7 @@ import SubleaseListings from './components/SubleaseListings/SubleaseListings'
 import ScraperSection from './components/ScraperSection/ScraperSection'
 import AllListingsSection from './components/AllListingsSection/AllListingsSection'
 import Footer from './components/Footer/Footer'
+import MapView from './components/MapView/MapView'
 import AdminUsersPage from './components/AdminUsersPage/AdminUsersPage'
 import './App.css'
 
@@ -22,6 +23,10 @@ function HomePage() {
 
       <section id="all-listings">
         <AllListingsSection />
+      </section>
+
+      <section id="map">
+        <MapView />
       </section>
 
       <section id="sublease">
