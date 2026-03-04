@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { getCurrentUser } from '../../utils/auth';
 import './SubleaseListings.css';
 
 function SubleaseListings() {
@@ -21,6 +22,14 @@ function SubleaseListings() {
   const [commentErrors, setCommentErrors] = useState({});
   const [commentSuccess, setCommentSuccess] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  // track the logged-in user
+  const [user, setUser] = useState(getCurrentUser);
+  useEffect(() => {
+    const handleAuthChange = (e) => setUser(e.detail);
+    window.addEventListener('auth-change', handleAuthChange);
+    return () => window.removeEventListener('auth-change', handleAuthChange);
+  }, []);
 
   useEffect(() => {
     if (successMessage) {
@@ -153,15 +162,21 @@ function SubleaseListings() {
         )}
 
         <div className="sublease-button-wrapper">
-          <button
-            className="post-sublease-btn"
-            onClick={() => setShowForm(!showForm)}
-          >
-            {showForm ? 'Close Form' : 'Post a Sublease'}
-          </button>
+          {user ? (
+            <button
+              className="post-sublease-btn"
+              onClick={() => setShowForm(!showForm)}
+            >
+              {showForm ? 'Close Form' : 'Post a Sublease'}
+            </button>
+          ) : (
+            <p className="sublease-login-prompt">
+              🔒 You must be <strong>signed in</strong> to post a sublease.
+            </p>
+          )}
         </div>
 
-        {showForm && (
+        {user && showForm && (
           <form className="sublease-form" onSubmit={handleSubmit} noValidate>
             <div className="form-field">
               <input
