@@ -6,6 +6,25 @@
   box-shadow: 0 2px 4px var(--color-shadow);
 }
 
+.listing-selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+.listing-select-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.listing-select-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text-light);
+}
+
 .listing-card-header {
   display: flex;
   justify-content: space-between;

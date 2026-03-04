@@ -17,6 +17,10 @@ function AllListingsSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [lastScraped, setLastScraped] = useState(null);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedListingIds, setSelectedListingIds] = useState([]);
+  const [selectedListingsMap, setSelectedListingsMap] = useState({});
+  const [shareMessage, setShareMessage] = useState('');
 
   // Filters
   const [priceMin, setPriceMin] = useState('');
@@ -120,6 +124,63 @@ function AllListingsSection() {
     setSources([]);
   };
 
+  const getListingId = (listing) =>
+    `${(listing.source || '').toLowerCase()}::${listing.address || ''}`;
+
+  const handleToggleSelectMode = () => {
+    setSelectMode((prev) => {
+      const next = !prev;
+      if (!next) {
+        setSelectedListingIds([]);
+        setSelectedListingsMap({});
+      }
+      return next;
+    });
+    setShareMessage('');
+  };
+
+  const handleToggleListingSelect = (listingId, listing) => {
+    setSelectedListingIds((prev) =>
+      prev.includes(listingId) ? prev.filter((id) => id !== listingId) : [...prev, listingId]
+    );
+    setSelectedListingsMap((prev) => {
+      if (prev[listingId]) {
+        const next = { ...prev };
+        delete next[listingId];
+        return next;
+      }
+      return { ...prev, [listingId]: listing };
+    });
+    setShareMessage('');
+  };
+
+  const handleCopySelectedLinks = async () => {
+    const selectedListings = selectedListingIds
+      .map((id) => selectedListingsMap[id])
+      .filter(Boolean);
+
+    const lines = selectedListings
+      .map((listing) => {
+        const link = listing?.listing_link || listing?.url;
+        if (!link) return null;
+        return `${listing.address}: ${link}`;
+      })
+      .filter(Boolean);
+
+    if (lines.length === 0) {
+      setShareMessage('No linked listings selected to copy.');
+      return;
+    }
+
+    const text = `Shared listings:\n${lines.join('\n')}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setShareMessage('Selected listings links copied to clipboard!');
+    } catch (err) {
+      setShareMessage('Failed to copy links. Please try again.');
+    }
+  };
+
   const hasActiveFilters =
     priceMin !== '' ||
     priceMax !== '' ||
@@ -158,6 +219,39 @@ function AllListingsSection() {
             </span>
           )}
         </div>
+
+        {allListings.length > 0 && (
+          <div className="all-listings-share-actions">
+            <button
+              type="button"
+              className="all-listings-share-btn"
+              onClick={handleToggleSelectMode}
+              disabled={loading}
+            >
+              {selectMode ? 'Exit selection mode' : 'Select listings'}
+            </button>
+
+            {selectMode && (
+              <>
+                <span className="all-listings-selected-count">
+                  {selectedListingIds.length} selected
+                </span>
+                <button
+                  type="button"
+                  className="all-listings-copy-btn"
+                  onClick={handleCopySelectedLinks}
+                  disabled={selectedListingIds.length === 0}
+                >
+                  Copy selected links
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
+        {shareMessage && (
+          <div className="all-listings-share-message">{shareMessage}</div>
+        )}
 
         {error && <div className="all-listings-error">{error}</div>}
 
@@ -273,6 +367,11 @@ function AllListingsSection() {
           listings={filteredListings}
           loading={loading}
           error={null}
+          hasFilters={hasActiveFilters}
+          selectable={selectMode}
+          selectedListingIds={selectedListingIds}
+          getListingId={getListingId}
+          onToggleSelect={handleToggleListingSelect}
           emptyMessage={
             allListings.length === 0
               ? 'No listings yet. Click "Refresh listings" to scrape from every company.'
