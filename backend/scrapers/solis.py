@@ -53,17 +53,14 @@ async def extract_solis_listing_data(element) -> dict | None:
     """Extract data from a single Solis listing element."""
     try:
         # Step 1: Get the three text spans (apartment type, bathrooms, sqft)
-        # Apartment type always immediately follows the h2 regardless of promo banners
-        apartment_type_el = await element.query_selector("h2 + span.text-xs")
-        apartment_type_text = await apartment_type_el.inner_text() if apartment_type_el else ""
-        # Bathrooms and sqft are matched by content to avoid index-shifting issues
-        bathrooms_text, sqft_text = "", ""
-        for span in await element.query_selector_all("span.text-xs"):
-            text = await span.inner_text()
-            if not bathrooms_text and re.search(r"bath", text, re.IGNORECASE):
-                bathrooms_text = text
-            elif not sqft_text and re.search(r"sq", text, re.IGNORECASE):
-                sqft_text = text
+        # Filter out promotional spans like "48-Hour Special" that the site may inject
+        text_spans = await element.query_selector_all("span.text-xs")
+        span_texts = [await s.inner_text() for s in text_spans]
+        promo_pattern = re.compile(r"\d+\s*-?\s*hour", re.IGNORECASE)
+        content_spans = [t for t in span_texts if not promo_pattern.search(t)]
+        apartment_type_text = content_spans[0] if len(content_spans) > 0 else ""
+        bathrooms_text = content_spans[1] if len(content_spans) > 1 else ""
+        sqft_text = content_spans[2] if len(content_spans) > 2 else ""
 
         # Step 2: Get address from h2
         address_el = await element.query_selector("h2")
