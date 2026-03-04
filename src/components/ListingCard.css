@@ -35,12 +35,17 @@
 }
 
 .listing-link {
-  color: var(--color-primary);
+  display: block;
+  color: inherit;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.listing-link:hover {
+.listing-link .listing-address {
+  color: var(--color-primary);
+}
+
+.listing-link:hover .listing-address {
   color: var(--color-info);
   text-decoration: underline;
 }
