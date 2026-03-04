@@ -78,9 +78,7 @@ It also provides context for GitHub commit activity and any pair programming not
 - Tested scraper updates locally and confirmed `listing_link` appears in API responses.
 - Verified listing links display correctly on the frontend and open the correct property pages.
 
-## Notes
 
-Some work involved debugging and integration across frontend and backend components to ensure listings display correctly with images and links. Scrapers for Solis were not updated due to existing issues in that scraper.
 
 ---
 
