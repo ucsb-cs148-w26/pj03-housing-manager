@@ -10,8 +10,6 @@ It also provides context for GitHub commit activity and any pair programming not
 ## Contributions
 - (Add your bullet points here describing code, features, testing, or documentation you contributed.)
 
-## GitHub Activity
-- (Optional notes about commits or GitHub contributions.)
 
 ---
 
@@ -20,8 +18,6 @@ It also provides context for GitHub commit activity and any pair programming not
 ## Contributions
 - (Add your bullet points here.)
 
-## GitHub Activity
-- (Optional notes.)
 
 ---
 
@@ -30,8 +26,6 @@ It also provides context for GitHub commit activity and any pair programming not
 ## Contributions
 - (Add your bullet points here.)
 
-## GitHub Activity
-- (Optional notes.)
 
 ---
 
@@ -40,8 +34,6 @@ It also provides context for GitHub commit activity and any pair programming not
 ## Contributions
 - (Add your bullet points here.)
 
-## GitHub Activity
-- (Optional notes.)
 
 ---
 
@@ -50,8 +42,6 @@ It also provides context for GitHub commit activity and any pair programming not
 ## Contributions
 - (Add your bullet points here.)
 
-## GitHub Activity
-- (Optional notes.)
 
 ---
 
@@ -60,8 +50,6 @@ It also provides context for GitHub commit activity and any pair programming not
 ## Contributions
 - (Add your bullet points here.)
 
-## GitHub Activity
-- (Optional notes.)
 
 ---
 
