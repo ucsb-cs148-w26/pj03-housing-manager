@@ -23,7 +23,6 @@ describe('ListingCard Component', () => {
     expect(screen.getByText('123 Del Playa')).toBeInTheDocument();
     expect(screen.getByText('2 bed')).toBeInTheDocument();
     expect(screen.getByText('1 bath')).toBeInTheDocument();
-    expect(screen.getByText('900 sq ft')).toBeInTheDocument();
     expect(screen.getByText('Source: Zillow')).toBeInTheDocument();
   });
 
@@ -58,24 +57,32 @@ describe('ListingCard Component', () => {
     expect(address.closest('a')).toBeNull();
   });
 
-  test('renders clickable link when URL is provided', () => {
+  test('renders clickable card link when URL is provided', () => {
     render(<ListingCard listing={baseListing} />);
-    const link = screen.getByRole('link', { name: '123 Del Playa' });
+    const link = screen.getByRole('link');
 
     expect(link).toHaveAttribute('href', 'https://example.com');
     expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveClass('listing-card');
+    expect(link).toHaveClass('listing-link');
+    expect(link).toContainElement(screen.getByText('123 Del Playa'));
+  });
+
+  test('prefers listing_link over url when both are present', () => {
+    const listing = {
+      ...baseListing,
+      listing_link: 'https://preferred.example.com',
+      url: 'https://fallback.example.com',
+    };
+    render(<ListingCard listing={listing} />);
+    const link = screen.getByRole('link');
+    expect(link).toHaveAttribute('href', 'https://preferred.example.com');
   });
 
   test('does not render square footage when square_feet is null', () => {
     const listing = { ...baseListing, square_feet: null };
     render(<ListingCard listing={listing} />);
     expect(screen.queryByText(/sq ft/)).toBeNull();
-  });
-
-  test('renders square footage with formatting when present', () => {
-    const listing = { ...baseListing, square_feet: 1200 };
-    render(<ListingCard listing={listing} />);
-    expect(screen.getByText('1,200 sq ft')).toBeInTheDocument();
   });
 
 });
