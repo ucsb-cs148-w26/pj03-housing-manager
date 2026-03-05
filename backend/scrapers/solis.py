@@ -1,6 +1,7 @@
 from playwright.async_api import async_playwright
 from datetime import datetime, timezone
 import asyncio
+import json
 import re
 
 async def scrape_solis() -> dict:
@@ -10,98 +11,59 @@ async def scrape_solis() -> dict:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
 
-        await page.goto("https://solisislavista.com/all-floor-plans")
-
-        # Wait for page to fully load (dynamic content)
+        # Navigate directly to the Entrata embed URL.
+        # The listing data is server-side rendered as JSON in the page's data-page attribute,
+        # so we just parse that instead of scraping the DOM.
+        await page.goto(
+            "https://embed.leaseleads.co/9e5b6e85-dc8f-438c-b76e-a669428600ec/floor-plans",
+            referer="https://solisislavista.com/",
+        )
         await page.wait_for_load_state("networkidle")
-        await asyncio.sleep(2)  # Extra wait for dynamic content
-        
-        frames = page.frames
-        target_frame = None
-        for i, frame in enumerate(frames):
-            try:
-                frame_content = await frame.content()
-                if "ll-floor-plan-card" in frame_content:
-                    target_frame = frame
-                    break
-            except Exception as e:
-                continue
-        
-        listing_elements = []
-        if target_frame:
-            listing_elements = await target_frame.query_selector_all(".ll-floor-plan-card")
 
-        for element in listing_elements:
-            try:
-                listing = await extract_solis_listing_data(element)
+        html = await page.content()
+        m = re.search(r'data-page="([^"]+)"', html)
+        if m:
+            raw = m.group(1).replace("&quot;", '"').replace("&amp;", "&")
+            data = json.loads(raw)
+            floor_plans = data.get("props", {}).get("floorPlans", [])
+            for fp in floor_plans:
+                listing = extract_solis_listing_data(fp)
                 if listing:
                     listings.append(listing)
-            except Exception as e:
-                print(f"Error extracting listing: {e}")
-                continue
 
         await browser.close()
 
     return {
         "listings": listings,
         "scraped_at": datetime.now(timezone.utc).isoformat() + "Z",
-        "source": "solis"
+        "source": "solis",
     }
 
 
-async def extract_solis_listing_data(element) -> dict | None:
-    """Extract data from a single Solis listing element."""
+def extract_solis_listing_data(fp: dict) -> dict | None:
+    """Extract a listing from a single floor plan JSON object."""
     try:
-        # Step 1: Get the three text spans (apartment type, bathrooms, sqft)
-        # Filter out promotional spans like "48-Hour Special" that the site may inject
-        text_spans = await element.query_selector_all("span.text-xs")
-        span_texts = [await s.inner_text() for s in text_spans]
-        promo_pattern = re.compile(r"\d+\s*-?\s*hour", re.IGNORECASE)
-        content_spans = [t for t in span_texts if not promo_pattern.search(t)]
-        apartment_type_text = content_spans[0] if len(content_spans) > 0 else ""
-        bathrooms_text = content_spans[1] if len(content_spans) > 1 else ""
-        sqft_text = content_spans[2] if len(content_spans) > 2 else ""
+        # bedrooms == 0 means studio
+        bedrooms = fp.get("bedrooms", 0) or None
 
-        # Step 2: Get address from h2
-        address_el = await element.query_selector("h2")
-        address = await address_el.inner_text() if address_el else "Unknown"
+        # status is "Move In Aug 22nd, 2026" — strip the prefix for a clean date
+        status = fp.get("status", "")
+        move_in_date = status.removeprefix("Move In ").strip() or "Unknown"
 
-        # Step 3: Get price
-        price_el = await element.query_selector("span.text-xl")
-        price_text = await price_el.inner_text() if price_el else ""
-        price_regex_match = re.search(r"[\d,]+", price_text)
-        price = int(price_regex_match.group().replace(',', '')) if price_regex_match else None
-
-        # Step 4: Get move-in date
-        move_in_el = await element.query_selector("span.bg-ll-background-light")
-        move_in_text = await move_in_el.inner_text() if move_in_el else ""
-        move_in_date = move_in_text.strip() if move_in_text else "Unknown"
-
-        # Step 5: Parse bedrooms and bathrooms
-        bedrooms, bathrooms = None, 1.0
-        if not re.search(r"studio", apartment_type_text, re.IGNORECASE):
-            bedrooms_match = re.search(r"(\d+)", apartment_type_text, re.IGNORECASE)
-            if bedrooms_match:
-                bedrooms = int(bedrooms_match.group())
-        
-        if re.search(r"bath", bathrooms_text, re.IGNORECASE):
-            bathrooms_match = re.search(r"(\d+(?:\.\d+)?)", bathrooms_text, re.IGNORECASE)
-            if bathrooms_match:
-                bathrooms = float(bathrooms_match.group())
-
-        sqft_match = re.search(r"([\d,]+)", sqft_text, re.IGNORECASE)
-        sqft = int(sqft_match.group().replace(',', '')) if sqft_match else None
+        apply_link = fp.get("apply_link") or {}
+        listing_url = apply_link.get("url")
 
         return {
-            "address": address,
-            "price": price,
+            "address": fp.get("name", "Unknown"),
+            "price": fp.get("price_min"),
             "bedrooms": bedrooms,
-            "bathrooms": bathrooms,
-            "square_feet": sqft,
+            "bathrooms": fp.get("bathrooms"),
+            "square_feet": fp.get("size_min"),
             "move_in_date": move_in_date,
             "category": "Residential",
-            "source": "solis"
+            "source": "solis",
+            "link": listing_url,
         }
     except Exception as e:
-        print(f"Error parsing listing: {e}")
+        print(f"Error parsing floor plan: {e}")
         return None

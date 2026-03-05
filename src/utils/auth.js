@@ -14,12 +14,14 @@ export function decodeToken(credential) {
   return JSON.parse(json)
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 /**
  * Handle the credential response from Google Identity Services.
- * Decodes the JWT, extracts user info, and saves to localStorage.
+ * Decodes the JWT, extracts user info, saves to localStorage, and fetches role from backend.
  * Returns the user object on success, or null on failure.
  */
-export function handleCredentialResponse(response) {
+export async function handleCredentialResponse(response) {
   try {
     const payload = decodeToken(response.credential)
     const user = {
@@ -27,8 +29,27 @@ export function handleCredentialResponse(response) {
       name: payload.name,
       sub: payload.sub,
       picture: payload.picture || null,
+      role: 'user',
     }
     localStorage.setItem('user', JSON.stringify(user))
+    localStorage.setItem('user_credential', response.credential)
+
+    // Upsert user in backend and fetch their role
+    try {
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: response.credential }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        user.role = data.role
+        localStorage.setItem('user', JSON.stringify(user))
+      }
+    } catch (backendErr) {
+      console.warn('Could not fetch role from backend:', backendErr)
+    }
+
     return user
   } catch (err) {
     console.error('Login failed: invalid credential', err)
@@ -42,6 +63,14 @@ export function handleCredentialResponse(response) {
  */
 export function signOut() {
   localStorage.removeItem('user')
+  localStorage.removeItem('user_credential')
+}
+
+/**
+ * Get the stored Google credential JWT for authenticated API calls.
+ */
+export function getCredential() {
+  return localStorage.getItem('user_credential')
 }
 
 /**

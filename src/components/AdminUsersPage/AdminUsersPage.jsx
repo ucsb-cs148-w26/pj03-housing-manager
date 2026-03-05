@@ -1,22 +1,17 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { getCurrentUser, getCredential } from '../../utils/auth';
 import './AdminUsersPage.css';
-
-// Mock data — replace with API calls once the backend is implemented
-const MOCK_USERS = [
-  { id: 1, email: 'admin@ucsb.edu', role: 'admin', createdAt: '2026-01-10' },
-  { id: 2, email: 'johndoe@ucsb.edu', role: 'user', createdAt: '2026-01-15' },
-  { id: 3, email: 'alicebob@ucsb.edu', role: 'admin', createdAt: '2026-02-01' },
-];
 
 const AVAILABLE_ROLES = ['user', 'admin'];
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-// Hardcoded for now — will come from auth once backend exists
-const isAdmin = true;
-
 function AdminUsersPage() {
-  const [users, setUsers] = useState(MOCK_USERS);
+  const currentUser = getCurrentUser();
+  const isAdmin = currentUser?.role === 'admin';
+
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   // Tracks the selected (uncommitted) role per user: { [userId]: role }
   const [pendingRoles, setPendingRoles] = useState({});
   // Tracks which user IDs are currently saving
@@ -29,10 +24,27 @@ function AdminUsersPage() {
     setTimeout(() => setFeedback(null), 3000);
   }, []);
 
+  useEffect(() => {
+    if (!isAdmin) {
+      setLoading(false);
+      return;
+    }
+    const credential = getCredential();
+    fetch(`${API_URL}/admin/users`, {
+      headers: { Authorization: `Bearer ${credential}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`${res.status}`);
+        return res.json();
+      })
+      .then((data) => setUsers(data))
+      .catch(() => showFeedback('error', 'Failed to load users.'))
+      .finally(() => setLoading(false));
+  }, [isAdmin, showFeedback]);
+
   const handleRoleChange = (userId, newRole) => {
     const user = users.find((u) => u.id === userId);
     if (newRole === user.role) {
-      // Reset to original — no pending change
       setPendingRoles((prev) => {
         const next = { ...prev };
         delete next[userId];
@@ -52,10 +64,13 @@ function AdminUsersPage() {
     setSavingIds((prev) => new Set(prev).add(userId));
 
     try {
-      // TODO: replace with real endpoint once backend is ready
+      const credential = getCredential();
       const response = await fetch(`${API_URL}/admin/users/${userId}/role`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${credential}`,
+        },
         body: JSON.stringify({ role: newRole }),
       });
 
@@ -63,7 +78,6 @@ function AdminUsersPage() {
         throw new Error(`Server responded with ${response.status}`);
       }
 
-      // Success — commit the new role into the users list
       setUsers((prev) =>
         prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
       );
@@ -74,7 +88,6 @@ function AdminUsersPage() {
       });
       showFeedback('success', `Role updated to "${newRole}" for user ${userId}.`);
     } catch {
-      // Error — revert dropdown to previous value
       setPendingRoles((prev) => {
         const next = { ...prev };
         delete next[userId];
@@ -112,7 +125,9 @@ function AdminUsersPage() {
           </div>
         )}
 
-        {users.length === 0 ? (
+        {loading ? (
+          <p className="admin-empty">Loading users…</p>
+        ) : users.length === 0 ? (
           <p className="admin-empty">No users found.</p>
         ) : (
           <div className="admin-table-wrapper">
@@ -122,7 +137,7 @@ function AdminUsersPage() {
                   <th>Email</th>
                   <th>Role</th>
                   <th>Created Date</th>
-                  {isAdmin && <th>Actions</th>}
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -138,7 +153,7 @@ function AdminUsersPage() {
                         <select
                           className={`admin-role-select admin-role-${displayedRole}`}
                           value={displayedRole}
-                          disabled={!isAdmin || isSaving}
+                          disabled={isSaving}
                           onChange={(e) => handleRoleChange(user.id, e.target.value)}
                         >
                           {AVAILABLE_ROLES.map((role) => (
@@ -149,17 +164,15 @@ function AdminUsersPage() {
                         </select>
                       </td>
                       <td>{new Date(user.createdAt).toLocaleDateString()}</td>
-                      {isAdmin && (
-                        <td>
-                          <button
-                            className="admin-save-btn"
-                            disabled={!hasChange || isSaving}
-                            onClick={() => handleSaveRole(user.id)}
-                          >
-                            {isSaving ? 'Saving…' : 'Save'}
-                          </button>
-                        </td>
-                      )}
+                      <td>
+                        <button
+                          className="admin-save-btn"
+                          disabled={!hasChange || isSaving}
+                          onClick={() => handleSaveRole(user.id)}
+                        >
+                          {isSaving ? 'Saving…' : 'Save'}
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}

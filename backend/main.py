@@ -3,11 +3,14 @@ Housing Manager Backend API
 Provides endpoints for scraping rental listings from various sources.
 """
 import asyncio
+import base64
+import json
 import os
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from scrapers.meridian import scrape_meridian
 from scrapers.solis import scrape_solis
@@ -15,8 +18,54 @@ from scrapers.Koto import scrape_koto
 from scrapers.playalife import scrape_playalife
 from scrapers.wolfe_scraper import scrape_wolfe
 
-from database import init_db, get_all_listings, get_scrape_metadata
+from database import (
+    init_db,
+    get_all_listings,
+    get_scrape_metadata,
+    upsert_user,
+    get_user_by_sub,
+    get_all_users,
+    update_user_role,
+)
 from scheduler import scrape_loop, run_all_scrapers_to_db
+
+VALID_ROLES = {"user", "admin"}
+
+
+def decode_jwt_payload(token: str) -> dict:
+    """Decode the payload section of a JWT without verifying the signature."""
+    parts = token.split(".")
+    if len(parts) != 3:
+        raise ValueError("Invalid JWT format")
+    padding = "=" * (4 - len(parts[1]) % 4)
+    decoded = base64.urlsafe_b64decode(parts[1] + padding)
+    return json.loads(decoded)
+
+
+async def require_admin(authorization: str = Header(default=None)) -> dict:
+    """FastAPI dependency that enforces admin-only access."""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    token = authorization[7:]
+    try:
+        payload = decode_jwt_payload(token)
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    google_sub = payload.get("sub")
+    if not google_sub:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
+    user = await get_user_by_sub(google_sub)
+    if not user or user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
+
+class LoginRequest(BaseModel):
+    credential: str
+
+
+class RoleUpdateRequest(BaseModel):
+    role: str
 
 _scrape_task = None
 
@@ -206,6 +255,67 @@ async def refresh_listings_endpoint():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Refresh failed: {str(e)}")
+
+
+@app.post("/auth/login")
+async def auth_login(body: LoginRequest):
+    """
+    Upsert a user from their Google credential JWT.
+    Returns the user's profile including their role.
+    """
+    try:
+        payload = decode_jwt_payload(body.credential)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid credential")
+    email = payload.get("email")
+    google_sub = payload.get("sub")
+    if not email or not google_sub:
+        raise HTTPException(status_code=400, detail="Missing email or sub in token")
+    user = await upsert_user(email=email, google_sub=google_sub)
+    return {
+        "id": user["id"],
+        "email": user["email"],
+        "role": user["role"],
+        "created_at": user["created_at"],
+    }
+
+
+@app.get("/admin/users")
+async def admin_list_users(current_user: dict = Depends(require_admin)):
+    """Return all users. Requires admin role."""
+    users = await get_all_users()
+    return [
+        {
+            "id": u["id"],
+            "email": u["email"],
+            "role": u["role"],
+            "createdAt": u["created_at"],
+        }
+        for u in users
+    ]
+
+
+@app.patch("/admin/users/{user_id}/role")
+async def admin_update_role(
+    user_id: int,
+    body: RoleUpdateRequest,
+    current_user: dict = Depends(require_admin),
+):
+    """Update a user's role. Requires admin role."""
+    if body.role not in VALID_ROLES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid role. Must be one of: {', '.join(VALID_ROLES)}",
+        )
+    updated = await update_user_role(user_id, body.role)
+    if not updated:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "id": updated["id"],
+        "email": updated["email"],
+        "role": updated["role"],
+        "createdAt": updated["created_at"],
+    }
 
 
 @app.get("/scrapers")
