@@ -30,6 +30,52 @@
   justify-content: center;
 }
 
+.all-listings-share-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.all-listings-share-btn,
+.all-listings-copy-btn {
+  border: 1px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.all-listings-share-btn:hover:not(:disabled),
+.all-listings-copy-btn:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: white;
+}
+
+.all-listings-copy-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.all-listings-selected-count {
+  font-size: 13px;
+  color: var(--color-text-light);
+}
+
+.all-listings-share-message {
+  margin: 0 auto 12px;
+  max-width: 640px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--color-info-bg);
+  color: var(--color-info);
+  font-size: 14px;
+}
+
 .all-listings-load-btn {
   background: var(--color-primary);
   color: white;
