@@ -8,8 +8,35 @@ It also provides context for GitHub commit activity and any pair programming not
 # Alex Jeong
 
 ## Contributions
-- (Add your bullet points here describing code, features, testing, or documentation you contributed.)
 
+- **Playalife housing scraper**
+  - Implemented a backend scraper that collects listings from the Playalife website and integrates them into the application.
+  - Extracted listing data including price, address, bedrooms, bathrooms, listing links, and additional listing details.
+  - Exposed the scraped data through a backend API endpoint so it can be consumed by the frontend listing components.
+
+- **Listing interaction improvements**
+  - Updated the `ListingCard` component so users can open the original listing source page directly by clicking on a card when a URL exists.
+  - Implemented URL fallback logic (`listing_link` or `url`) so cards work with multiple backend formats.
+  - Ensured listings without valid URLs remain visible but non-clickable to avoid broken links.
+
+- **Listing sharing feature**
+  - Implemented a multi-select workflow in the Browse All Listings view that allows users to select multiple listings.
+  - Added functionality to generate and copy selected listing links to the clipboard.
+  - Designed the feature to help users easily share potential housing options with roommates or friends.
+
+- **Theme automation**
+  - Implemented an automatic theme mode that switches between light and dark mode based on the user’s local time.
+  - Ensured the correct theme loads on application start and updates if the time crosses the light/dark boundary while the app is open.
+  - Preserved manual theme selection so users can override the automatic mode.
+
+- **Component testing**
+  - Created and updated unit tests for the `ListingCard` React component.
+  - Verified correct rendering of listing information and ensured tests reflect the updated clickable-card behavior.
+
+- **Product Owner responsibilities**
+  - Wrote and organized user stories for features.
+  - Maintained the team Kanban board and tracked issue progress through the development cycle.
+  - Led team meetings and helped coordinate development to ensure features were implemented according to the product goals.
 
 ---
 
@@ -24,7 +51,24 @@ It also provides context for GitHub commit activity and any pair programming not
 # Jeffrey Keem
 
 ## Contributions
-- (Add your bullet points here.)
+
+### Homepage UI (`src/components/`, `src/App.jsx`, `src/index.css`)
+- Built the initial homepage layout and styling, including `App.jsx` and `App.css` updates.
+- Created multiple homepage components from scratch: `Header`, `Footer`, `AboutSection`, `RecentListingsSection`, and `ListingCard` — totaling 634 new lines of JSX and CSS.
+
+### Light/Dark Mode Toggle (`src/components/ThemeToggle/`)
+- Implemented a light and dark mode toggle feature with a new `ThemeToggle` component.
+- Updated CSS across 12 files (Header, Footer, ListingCard, ListingList, AdminUsersPage, SubleaseListings, AllListingsSection, etc.) to support theme-aware styling.
+- Added global theme variables in `src/index.css`.
+
+### Sublease Form Validation (`src/components/SubleaseListings/`)
+- Added form validation to the sublease listings form to improve user experience.
+- Refactored and expanded `SubleaseListings.jsx` (291 new lines) and added 100 lines of supporting CSS.
+
+### Project Setup & Documentation
+- Set up the initial project repo (hello world, `.gitignore`, license).
+- Removed `node_modules` from the repository.
+- Authored team documents: `AGREEMENTS.md`, `NORMS.md`, `LEADERSHIP.md`, and `AI_CODING.md`.
 
 
 ---
@@ -40,7 +84,28 @@ It also provides context for GitHub commit activity and any pair programming not
 # Kyle Villeponteau
 
 ## Contributions
-- (Add your bullet points here.)
+
+- **Browse All Listings feature **
+  - Built the `AllListingsSection` React component that lets users load all listings at once and then filter by price range, bedrooms, bathrooms, square footage, and source.
+  - Updated shared components (`ListingCard`, `ListingList`) to support square-footage display and customizable empty-state messages so the new section can reuse existing UI.
+  - Wired the new section into `App.jsx` and the header navigation so “Browse All” is a first-class part of the home page.
+
+- **Koto scraper robustness and deduplication**
+  - Improved `backend/scrapers/Koto.py` to extract stable listing URLs from the Koto site so each card can deep-link back to the original property page.
+  - Implemented deduplication logic (by URL and, when needed, by normalized address) so the same Koto listing does not appear multiple times in the combined results.
+  - Tightened address/price/bed/bath parsing heuristics to better handle noisy or inconsistent markup on the Koto vacancies page.
+
+- **Developer experience and debugging support**
+  - Helped debug FastAPI syntax and import issues in `main.py` and `Koto.py` that were preventing the backend from starting under `uvicorn --reload`.
+  - Verified that all scraper modules compile and can be imported correctly inside the backend virtual environment.
+  - Documented the Browse All feature work and use of AI assistance in `team/AI_CODING.md` so future contributors understand the design and trade-offs.
+
+## Testing
+
+- Manually exercised the `/scrape/all` endpoint and individual scraper endpoints locally, checking that response shapes match the frontend’s expectations and that each listing is tagged with the correct `source`.
+- Used the Browse All UI to verify that filters behave as expected across combinations (price ranges, studio vs multi-bedroom, various bathroom counts, square-footage bounds, and per-source chips).
+- Spot-checked Koto scraper output against the live site to confirm that addresses, prices, and bed/bath counts are accurate and that duplicate listings are removed.
+- Confirmed that the React app still builds and routes correctly after wiring the new section into `App.jsx` and updating the header nav.
 
 
 ---
@@ -78,16 +143,120 @@ It also provides context for GitHub commit activity and any pair programming not
 - Tested scraper updates locally and confirmed `listing_link` appears in API responses.
 - Verified listing links display correctly on the frontend and open the correct property pages.
 
-## Notes
 
-Some work involved debugging and integration across frontend and backend components to ensure listings display correctly with images and links. Scrapers for Solis were not updated due to existing issues in that scraper.
 
 ---
 
 # Bryce Inouye
 
-## Contributions
-- (Add your bullet points here.)
+# Bryce Inouye Contributions
 
-## GitHub Activity
-- (Optional notes.)
+**Role:** Testing / QA Coordinator  
+
+---
+
+## Summary
+
+Contributed across three areas:
+1. Solis property scraper (build + refactor)
+2. Admin user management frontend
+3. Admin backend with Google OAuth integration
+
+---
+
+## 1. Solis Scraper (`backend/scrapers/solis.py`)
+
+**Commits:** `2dc2eb7`, `0505f35`, `15b1e43`, `3daff2d`
+
+Built the Solis IV scraper using Playwright to extract listing data from an Entrata/LeaseLeads iframe.
+
+### Key Improvements
+
+- **Initial version:**  
+  - Located iframe dynamically  
+  - Extracted address, price, beds, baths, sq ft, and move-in date via DOM queries  
+
+- **Bug fix (48-Hour Special issue):**  
+  - Promo banner caused `48` to be parsed as bedroom count  
+  - Root cause: index-based span extraction  
+  - Fix: switched to keyword-based content matching (`bed`, `studio`, `bath`, `sq. ft.`)
+
+- **Major Refactor (current branch):**  
+  - Discovered listing data embedded as JSON in `data-page` (Inertia.js)  
+  - Rewrote scraper to parse JSON directly  
+  - Benefits:
+    - Eliminated DOM parsing fragility
+    - Added unique listing URL (`apply_link.url`)
+    - Faster and simpler
+    - Correct studio handling (`0 → null`)
+
+---
+
+## 2. Admin User Management Frontend (`src/components/AdminUsersPage/`)
+
+**Commits:** `4a07edb`, `22874ea`
+
+Designed and implemented admin dashboard UI.
+
+### Iteration 1
+- Built `AdminUsersPage` + styling
+- Added routing + admin header link
+- Rendered user table (email, role, created date)
+- Used mock data + temporary `isAdmin = true`
+
+### Iteration 2
+- Added per-user role dropdown
+- Save button activates on change
+- Optimistic UI with:
+  - Per-row loading state
+  - Success/error banners
+  - Rollback on failure
+- Connected to `PATCH /admin/users/{id}/role`
+
+### Integration (current branch)
+- Replaced mocks with live backend calls
+- `GET /admin/users` on mount (Bearer auth)
+- `isAdmin` derived from stored user role
+- Added loading state
+- Updated Save to match backend `PATCH` route
+
+---
+
+## 3. Admin Backend + Google OAuth
+
+**Branch:** `bi_admin_dashboard` (uncommitted)
+
+Implemented full authentication + admin role management.
+
+### Database (`database.py`)
+- Added `users` table (`id`, `email`, `google_sub`, `role`, `created_at`)
+- `upsert_user` (preserves role on conflict)
+- CRUD helpers:
+  - `get_user_by_sub`
+  - `get_all_users`
+  - `update_user_role`
+
+### API (`main.py`)
+- `decode_jwt_payload` (no signature verification — acceptable for class scope)
+- `require_admin` dependency (401/403 handling)
+- `POST /auth/login` — upserts user, returns role
+- `GET /admin/users` — admin-only
+- `PATCH /admin/users/{id}/role` — admin-only with role validation
+
+### Auth Flow (`src/utils/auth.js`)
+- Made `handleCredentialResponse` async
+- Calls `POST /auth/login` after Google login
+- Stores backend-returned role in `localStorage`
+- Added `getCredential()` helper
+- Updated `signOut()` to clear credential
+
+---
+
+## 4. Testing / QA
+
+As Testing/QA Coordinator, established the team's testing approach and validated features before merging.
+
+- **Scraper validation:** After each scraper fix, verified output programmatically by hitting the `/scrape/solis` endpoint and asserting all 34 listings had a `link`, correct `null` bedrooms for studios, and zero occurrences of `bedrooms=48`
+- **Bug reproduction:** Traced the 48-Hour Special bedroom bug to the exact DOM rendering difference in the Entrata widget before writing the fix
+- **Debug tooling:** Used Playwright's frame inspection and live page HTML dumps to diagnose why iframe content detection was failing, which led to discovering the JSON data approach
+- **Testing framework:** Set up Vitest as the project's frontend testing framework (`vitest`, `@testing-library/react`, `jsdom`); documented the testing strategy in `team/TESTING.md`

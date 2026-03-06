@@ -1,6 +1,8 @@
 import './ListingCard.css';
 
-function ListingCard({ listing }) {
+function ListingCard({ listing, selectable = false, selected = false, onToggleSelect = null }) {
+  const listingUrl = listing.listing_link || listing.url || null;
+
   const formatPrice = (price) => {
     if (price === null || price === undefined) return 'Price N/A';
     return `$${price.toLocaleString()}/mo`;
@@ -17,8 +19,21 @@ function ListingCard({ listing }) {
     return `${baths} bath`;
   };
 
-  return (
-    <div className="listing-card">
+  const cardContent = (
+    <>
+      {selectable && (
+        <div className="listing-select-row">
+          <label className="listing-select-label">
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={onToggleSelect}
+              onClick={(e) => e.stopPropagation()}
+            />
+            Select
+          </label>
+        </div>
+      )}
       {listing.image_url && (
         <div className="listing-image-container">
           <img src={listing.image_url} alt={listing.address} className="listing-image" />
@@ -28,23 +43,35 @@ function ListingCard({ listing }) {
         <span className="listing-category">{listing.category}</span>
         <span className="listing-price">{formatPrice(listing.price)}</span>
       </div>
-      <h3 className="listing-address">
-        {listing.listing_link ? (
-          <a href={listing.listing_link} target="_blank" rel="noopener noreferrer" className="listing-link">
-            {listing.address}
-          </a>
-        ) : (
-          listing.address
-        )}
-      </h3>
+      <h3 className="listing-address">{listing.address}</h3>
       <div className="listing-details">
         <span>{formatBedrooms(listing.bedrooms)}</span>
         <span className="separator">|</span>
         <span>{formatBathrooms(listing.bathrooms)}</span>
       </div>
       <div className="listing-source">Source: {listing.source}</div>
-    </div>
+    </>
   );
+
+  if (listingUrl) {
+    return (
+      <a
+        href={listingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`listing-card listing-link ${selected ? 'listing-selected' : ''}`}
+        onClick={(e) => {
+          if (selectable) {
+            e.preventDefault();
+          }
+        }}
+      >
+        {cardContent}
+      </a>
+    );
+  }
+
+  return <div className={`listing-card ${selected ? 'listing-selected' : ''}`}>{cardContent}</div>;
 }
 
 export default ListingCard;
