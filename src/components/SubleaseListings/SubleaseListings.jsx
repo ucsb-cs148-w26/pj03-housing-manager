@@ -353,8 +353,13 @@ function SubleaseListings() {
               <div className="sublease-location">{post.location}</div>
               <div className="sublease-dates">{post.dates}</div>
               <div className="sublease-description">{post.description}</div>
+
+              {/* ✅ Now shows author name, email, and date */}
               <div className="sublease-author">
-                Posted by {post.author_name} · {new Date(post.created_at).toLocaleDateString()}
+                Posted by {post.author_name}
+                <span className="author-email"> ({post.author_email})</span>
+                {' · '}
+                {new Date(post.created_at).toLocaleDateString()}
               </div>
 
               {user && user.email === post.author_email && (
@@ -418,7 +423,11 @@ function SubleaseListings() {
                         (comments[post.id] || []).map(comment => (
                           <div key={comment.id} className="comment" data-testid={`comment-${comment.id}`}>
                             <div className="comment-header">
-                              <span className="comment-author">{comment.author_name}</span>
+                              {/* ✅ Now shows commenter name, email, and timestamp */}
+                              <div className="comment-author-info">
+                                <span className="comment-author">{comment.author_name}</span>
+                                <span className="comment-author-email">{comment.author_email}</span>
+                              </div>
                               <span className="comment-timestamp">
                                 {new Date(comment.created_at).toLocaleString()}
                               </span>
