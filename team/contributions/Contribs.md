@@ -8,8 +8,35 @@ It also provides context for GitHub commit activity and any pair programming not
 # Alex Jeong
 
 ## Contributions
-- (Add your bullet points here describing code, features, testing, or documentation you contributed.)
 
+- **Playalife housing scraper**
+  - Implemented a backend scraper that collects listings from the Playalife website and integrates them into the application.
+  - Extracted listing data including price, address, bedrooms, bathrooms, listing links, and additional listing details.
+  - Exposed the scraped data through a backend API endpoint so it can be consumed by the frontend listing components.
+
+- **Listing interaction improvements**
+  - Updated the `ListingCard` component so users can open the original listing source page directly by clicking on a card when a URL exists.
+  - Implemented URL fallback logic (`listing_link` or `url`) so cards work with multiple backend formats.
+  - Ensured listings without valid URLs remain visible but non-clickable to avoid broken links.
+
+- **Listing sharing feature**
+  - Implemented a multi-select workflow in the Browse All Listings view that allows users to select multiple listings.
+  - Added functionality to generate and copy selected listing links to the clipboard.
+  - Designed the feature to help users easily share potential housing options with roommates or friends.
+
+- **Theme automation**
+  - Implemented an automatic theme mode that switches between light and dark mode based on the user’s local time.
+  - Ensured the correct theme loads on application start and updates if the time crosses the light/dark boundary while the app is open.
+  - Preserved manual theme selection so users can override the automatic mode.
+
+- **Component testing**
+  - Created and updated unit tests for the `ListingCard` React component.
+  - Verified correct rendering of listing information and ensured tests reflect the updated clickable-card behavior.
+
+- **Product Owner responsibilities**
+  - Wrote and organized user stories for features.
+  - Maintained the team Kanban board and tracked issue progress through the development cycle.
+  - Led team meetings and helped coordinate development to ensure features were implemented according to the product goals.
 
 ---
 
