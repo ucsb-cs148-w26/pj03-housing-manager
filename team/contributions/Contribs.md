@@ -40,7 +40,28 @@ It also provides context for GitHub commit activity and any pair programming not
 # Kyle Villeponteau
 
 ## Contributions
-- (Add your bullet points here.)
+
+- **Browse All Listings feature **
+  - Built the `AllListingsSection` React component that lets users load all listings at once and then filter by price range, bedrooms, bathrooms, square footage, and source.
+  - Updated shared components (`ListingCard`, `ListingList`) to support square-footage display and customizable empty-state messages so the new section can reuse existing UI.
+  - Wired the new section into `App.jsx` and the header navigation so “Browse All” is a first-class part of the home page.
+
+- **Koto scraper robustness and deduplication**
+  - Improved `backend/scrapers/Koto.py` to extract stable listing URLs from the Koto site so each card can deep-link back to the original property page.
+  - Implemented deduplication logic (by URL and, when needed, by normalized address) so the same Koto listing does not appear multiple times in the combined results.
+  - Tightened address/price/bed/bath parsing heuristics to better handle noisy or inconsistent markup on the Koto vacancies page.
+
+- **Developer experience and debugging support**
+  - Helped debug FastAPI syntax and import issues in `main.py` and `Koto.py` that were preventing the backend from starting under `uvicorn --reload`.
+  - Verified that all scraper modules compile and can be imported correctly inside the backend virtual environment.
+  - Documented the Browse All feature work and use of AI assistance in `team/AI_CODING.md` so future contributors understand the design and trade-offs.
+
+## Testing
+
+- Manually exercised the `/scrape/all` endpoint and individual scraper endpoints locally, checking that response shapes match the frontend’s expectations and that each listing is tagged with the correct `source`.
+- Used the Browse All UI to verify that filters behave as expected across combinations (price ranges, studio vs multi-bedroom, various bathroom counts, square-footage bounds, and per-source chips).
+- Spot-checked Koto scraper output against the live site to confirm that addresses, prices, and bed/bath counts are accurate and that duplicate listings are removed.
+- Confirmed that the React app still builds and routes correctly after wiring the new section into `App.jsx` and updating the header nav.
 
 
 ---
