@@ -213,7 +213,7 @@ async def refresh_listings_endpoint():
         raise HTTPException(status_code=500, detail=f"Refresh failed: {str(e)}")
 
 
-# ── Sublease post endpoints ──────────────────��────────────────────────────────
+#  Sublease post endpoints 
 
 class SubleasePostIn(BaseModel):
     title: str
@@ -301,7 +301,7 @@ async def delete_comment_endpoint(post_id: int, comment_id: int, author_email: s
         raise HTTPException(status_code=500, detail=f"Failed to delete comment: {str(e)}")
 
 
-# ── Scrapers list 
+#  Scrapers list 
 
 @app.get("/scrapers")
 async def list_scrapers():
