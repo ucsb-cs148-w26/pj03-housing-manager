@@ -11,8 +11,8 @@ function Header() {
   const [user, setUser] = useState(getCurrentUser);
   const googleBtnRef = useRef(null);
 
-  const onCredentialResponse = useCallback((response) => {
-    const loggedInUser = handleCredentialResponse(response);
+  const onCredentialResponse = useCallback(async (response) => {
+    const loggedInUser = await handleCredentialResponse(response);
     if (loggedInUser) {
       try { window.google?.accounts?.id?.cancel(); } catch (_) {}
       flushSync(() => setUser(loggedInUser));
@@ -109,14 +109,16 @@ function Header() {
               Contact
             </a>
           </li>
-          <li>
-            <Link
-              to="/admin/users"
-              className={location.pathname.startsWith('/admin') ? 'active' : ''}
-            >
-              Admin
-            </Link>
-          </li>
+          {user?.role === 'admin' && (
+            <li>
+              <Link
+                to="/admin/users"
+                className={location.pathname.startsWith('/admin') ? 'active' : ''}
+              >
+                Admin
+              </Link>
+            </li>
+          )}
         </ul>
         <div className="header-actions">
           <ThemeToggle />
