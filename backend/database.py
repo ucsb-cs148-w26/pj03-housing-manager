@@ -13,7 +13,6 @@ DB_PATH = os.getenv("DB_PATH", os.path.join(os.path.dirname(__file__), "data", "
 
 async def init_db():
     """Create all tables if they don't exist."""
-    """Create the listings and users tables if they don't exist."""
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     async with aiosqlite.connect(DB_PATH) as db:
         await db.execute("PRAGMA journal_mode=WAL")
@@ -72,6 +71,7 @@ async def init_db():
                 created_at TEXT NOT NULL
             )
         """)
+
         await db.commit()
 
 
@@ -141,7 +141,7 @@ async def get_scrape_metadata() -> dict:
         return {"total_listings": total, "last_updated": last_updated}
 
 
-#  Sublease posts 
+# ── Sublease posts ────────────────────────────────────────────────────────────
 
 async def create_sublease_post(post: dict) -> dict:
     """Insert a new sublease post and return it with its generated id."""
@@ -196,7 +196,7 @@ async def delete_sublease_post(post_id: int, author_email: str) -> bool:
         return cursor.rowcount > 0
 
 
-#  Sublease comments 
+# ── Sublease comments ─────────────────────────────────────────────────────────
 
 async def create_comment(post_id: int, comment: dict) -> dict:
     """Insert a new comment on a sublease post."""
@@ -233,6 +233,24 @@ async def get_comments_for_post(post_id: int) -> list[dict]:
             ORDER BY created_at ASC
             """,
             (post_id,),
+        )
+        rows = await cursor.fetchall()
+        return [dict(row) for row in rows]
+
+
+async def delete_comment(comment_id: int, author_email: str) -> bool:
+    """Delete a comment. Returns True if deleted, False if not found or not owned."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        cursor = await db.execute(
+            "DELETE FROM sublease_comments WHERE id = ? AND author_email = ?",
+            (comment_id, author_email),
+        )
+        await db.commit()
+        return cursor.rowcount > 0
+
+
+# ── Users ─────────────────────────────────────────────────────────────────────
+
 async def upsert_user(email: str, google_sub: str) -> dict:
     """Insert a new user or return the existing one. Does not overwrite role."""
     now = datetime.now(timezone.utc).isoformat()
@@ -278,15 +296,6 @@ async def get_all_users() -> list[dict]:
         return [dict(row) for row in rows]
 
 
-async def delete_comment(comment_id: int, author_email: str) -> bool:
-    """Delete a comment. Returns True if deleted, False if not found or not owned."""
-    async with aiosqlite.connect(DB_PATH) as db:
-        cursor = await db.execute(
-            "DELETE FROM sublease_comments WHERE id = ? AND author_email = ?",
-            (comment_id, author_email),
-        )
-        await db.commit()
-        return cursor.rowcount > 0
 async def update_user_role(user_id: int, role: str) -> dict | None:
     """Update a user's role. Returns the updated user or None if not found."""
     async with aiosqlite.connect(DB_PATH) as db:
