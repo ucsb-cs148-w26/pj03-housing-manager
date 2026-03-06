@@ -22,13 +22,7 @@ from database import (
     init_db, get_all_listings, get_scrape_metadata,
     create_sublease_post, get_sublease_posts, delete_sublease_post,
     create_comment, get_comments_for_post, delete_comment,
-    init_db,
-    get_all_listings,
-    get_scrape_metadata,
-    upsert_user,
-    get_user_by_sub,
-    get_all_users,
-    update_user_role,
+    upsert_user, get_user_by_sub, get_all_users, update_user_role,
 )
 from scheduler import scrape_loop, run_all_scrapers_to_db
 
@@ -124,6 +118,7 @@ async def scrape_meridian_endpoint():
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Scraping failed: {str(e)}")
+
 
 @app.get("/scrape/playalife")
 async def scrape_playalife_endpoint():
@@ -348,7 +343,8 @@ async def delete_comment_endpoint(post_id: int, comment_id: int, author_email: s
         raise HTTPException(status_code=500, detail=f"Failed to delete comment: {str(e)}")
 
 
-#  Scrapers list 
+#  Auth endpoints 
+
 @app.post("/auth/login")
 async def auth_login(body: LoginRequest):
     """
@@ -371,6 +367,8 @@ async def auth_login(body: LoginRequest):
         "created_at": user["created_at"],
     }
 
+
+#  Admin endpoints 
 
 @app.get("/admin/users")
 async def admin_list_users(current_user: dict = Depends(require_admin)):
@@ -409,6 +407,8 @@ async def admin_update_role(
         "createdAt": updated["created_at"],
     }
 
+
+#  Scrapers list 
 
 @app.get("/scrapers")
 async def list_scrapers():
