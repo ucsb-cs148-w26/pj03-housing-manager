@@ -25,7 +25,7 @@ It also provides context for GitHub commit activity and any pair programming not
   - Designed the feature to help users easily share potential housing options with roommates or friends.
 
 - **Theme automation**
-  - Implemented an automatic theme mode that switches between light and dark mode based on the user’s local time.
+  - Implemented an automatic theme mode that switches between light and dark mode based on the user's local time.
   - Ensured the correct theme loads on application start and updates if the time crosses the light/dark boundary while the app is open.
   - Preserved manual theme selection so users can override the automatic mode.
 
@@ -76,7 +76,29 @@ It also provides context for GitHub commit activity and any pair programming not
 # Nathan Mitter
 
 ## Contributions
-- (Add your bullet points here.)
+
+- **Initial sublease posting capability** ([#74](https://github.com/ucsb-cs148-w26/pj03-housing-manager/pull/74))
+  - Built out the sublease post form and wired the "Post a Sublease" button to submit new listings.
+  - Laid the groundwork for the full sublease feature (auth gating and styling followed in subsequent PRs).
+
+- **Login requirement for sublease posting** ([#114](https://github.com/ucsb-cs148-w26/pj03-housing-manager/pull/114))
+  - Restricted sublease post creation to authenticated users only.
+  - Added a styled login prompt displayed to unauthenticated users in place of the post form.
+
+- **Login prompt UI polish** ([#116](https://github.com/ucsb-cs148-w26/pj03-housing-manager/pull/116))
+  - Reformatted the login prompt shown on the sublease page for better visual consistency with the rest of the UI.
+
+- **Connected sublease posts and comments to the database** ([#119](https://github.com/ucsb-cs148-w26/pj03-housing-manager/pull/119))
+  - Wired sublease post creation, retrieval, and deletion to the SQLite backend.
+  - Wired comment creation, retrieval, and deletion to the database with full cascade behavior.
+  - Added `sublease_posts` and `sublease_comments` tables to `database.py`.
+
+- **Fixed broken backend after merge** ([#121](https://github.com/ucsb-cs148-w26/pj03-housing-manager/pull/121))
+  - Resolved a bad merge conflict in `database.py` where `get_comments_for_post` was missing its closing lines and `upsert_user` had been spliced into the middle of it, causing a `SyntaxError` on startup.
+  - Cleaned up duplicate imports in `main.py`.
+
+- **Displayed poster email on sublease listings and comments** ([#122](https://github.com/ucsb-cs148-w26/pj03-housing-manager/pull/122))
+  - Added author email display on sublease post cards and comment entries so users can contact posters off-site.
 
 
 ---
@@ -88,7 +110,7 @@ It also provides context for GitHub commit activity and any pair programming not
 - **Browse All Listings feature **
   - Built the `AllListingsSection` React component that lets users load all listings at once and then filter by price range, bedrooms, bathrooms, square footage, and source.
   - Updated shared components (`ListingCard`, `ListingList`) to support square-footage display and customizable empty-state messages so the new section can reuse existing UI.
-  - Wired the new section into `App.jsx` and the header navigation so “Browse All” is a first-class part of the home page.
+  - Wired the new section into `App.jsx` and the header navigation so "Browse All" is a first-class part of the home page.
 
 - **Koto scraper robustness and deduplication**
   - Improved `backend/scrapers/Koto.py` to extract stable listing URLs from the Koto site so each card can deep-link back to the original property page.
@@ -102,7 +124,7 @@ It also provides context for GitHub commit activity and any pair programming not
 
 ## Testing
 
-- Manually exercised the `/scrape/all` endpoint and individual scraper endpoints locally, checking that response shapes match the frontend’s expectations and that each listing is tagged with the correct `source`.
+- Manually exercised the `/scrape/all` endpoint and individual scraper endpoints locally, checking that response shapes match the frontend's expectations and that each listing is tagged with the cor[...]
 - Used the Browse All UI to verify that filters behave as expected across combinations (price ranges, studio vs multi-bedroom, various bathroom counts, square-footage bounds, and per-source chips).
 - Spot-checked Koto scraper output against the live site to confirm that addresses, prices, and bed/bath counts are accurate and that duplicate listings are removed.
 - Confirmed that the React app still builds and routes correctly after wiring the new section into `App.jsx` and updating the header nav.
@@ -256,7 +278,7 @@ Implemented full authentication + admin role management.
 
 As Testing/QA Coordinator, established the team's testing approach and validated features before merging.
 
-- **Scraper validation:** After each scraper fix, verified output programmatically by hitting the `/scrape/solis` endpoint and asserting all 34 listings had a `link`, correct `null` bedrooms for studios, and zero occurrences of `bedrooms=48`
+- **Scraper validation:** After each scraper fix, verified output programmatically by hitting the `/scrape/solis` endpoint and asserting all 34 listings had a `link`, correct `null` bedrooms for studi[...]
 - **Bug reproduction:** Traced the 48-Hour Special bedroom bug to the exact DOM rendering difference in the Entrata widget before writing the fix
 - **Debug tooling:** Used Playwright's frame inspection and live page HTML dumps to diagnose why iframe content detection was failing, which led to discovering the JSON data approach
 - **Testing framework:** Set up Vitest as the project's frontend testing framework (`vitest`, `@testing-library/react`, `jsdom`); documented the testing strategy in `team/TESTING.md`
