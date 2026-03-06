@@ -373,3 +373,46 @@
   font-size: var(--font-size-base);
   display: inline-block;
 }
+
+.sublease-error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: var(--font-size-sm);
+  max-width: 600px;
+  margin: 12px auto;
+  text-align: center;
+}
+
+.sublease-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.sublease-author {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.post-delete-btn {
+  background: none;
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.post-delete-btn:hover {
+  background-color: var(--color-error);
+  color: white;
+}
