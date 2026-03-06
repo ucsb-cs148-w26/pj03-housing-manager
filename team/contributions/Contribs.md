@@ -24,7 +24,24 @@ It also provides context for GitHub commit activity and any pair programming not
 # Jeffrey Keem
 
 ## Contributions
-- (Add your bullet points here.)
+
+### Homepage UI (`src/components/`, `src/App.jsx`, `src/index.css`)
+- Built the initial homepage layout and styling, including `App.jsx` and `App.css` updates.
+- Created multiple homepage components from scratch: `Header`, `Footer`, `AboutSection`, `RecentListingsSection`, and `ListingCard` — totaling 634 new lines of JSX and CSS.
+
+### Light/Dark Mode Toggle (`src/components/ThemeToggle/`)
+- Implemented a light and dark mode toggle feature with a new `ThemeToggle` component.
+- Updated CSS across 12 files (Header, Footer, ListingCard, ListingList, AdminUsersPage, SubleaseListings, AllListingsSection, etc.) to support theme-aware styling.
+- Added global theme variables in `src/index.css`.
+
+### Sublease Form Validation (`src/components/SubleaseListings/`)
+- Added form validation to the sublease listings form to improve user experience.
+- Refactored and expanded `SubleaseListings.jsx` (291 new lines) and added 100 lines of supporting CSS.
+
+### Project Setup & Documentation
+- Set up the initial project repo (hello world, `.gitignore`, license).
+- Removed `node_modules` from the repository.
+- Authored team documents: `AGREEMENTS.md`, `NORMS.md`, `LEADERSHIP.md`, and `AI_CODING.md`.
 
 
 ---
