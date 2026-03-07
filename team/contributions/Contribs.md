@@ -135,7 +135,21 @@ It also provides context for GitHub commit activity and any pair programming not
 # Om Kulkarni
 
 ## Contributions
-- (Add your bullet points here.)
+
+- **Google OAuth 2.0 login** (`src/utils/auth.js`, `src/components/Header/Header.jsx`, `index.html`)
+  - Implemented the Google Identity Services login button in the site header with JWT credential decoding.
+  - Built the full auth utility module (`auth.js`) including `decodeToken`, `handleCredentialResponse`, `signOut`, `getCredential`, and `getCurrentUser` helpers.
+  - Stored user info and credential in localStorage and integrated with the backend `/auth/login` endpoint to fetch user roles.
+  - Wrote 10 unit tests (`auth.test.js`) covering all four auth utility functions, including edge cases for malformed tokens and corrupted localStorage.
+
+- **Google Maps API integration** (`src/components/MapView/MapView.jsx`, `src/components/MapView/MapView.css`)
+  - Built the Map View page using `@react-google-maps/api`, centered on Isla Vista, that displays all scraped listings as interactive map pins.
+  - Implemented address geocoding with the Google Geocoder API, including a client-side cache and automatic "Isla Vista, CA" suffix for better accuracy.
+  - Added clickable InfoWindow popups showing listing price, bed/bath details, source, and a link to the original listing page.
+
+- **Design Document Coordinator**
+  - Owned the team design document (linked in `docs/DESIGN.md`), responsible for creating the initial version and maintaining it throughout the quarter.
+  - Authored `team/TESTING.md` documenting the team's unit and component testing strategy, tooling choices (Vitest, React Testing Library), and plans for future test coverage.
 
 
 ---
