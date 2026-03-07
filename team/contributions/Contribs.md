@@ -43,7 +43,18 @@ It also provides context for GitHub commit activity and any pair programming not
 # Alex Yoon
 
 ## Contributions
-- (Add your bullet points here.)
+
+- **Database infrastructure**
+  - Built and maintained the core database layer for the application, designing the schema and implementing the underlying data models used across features.
+  - Set up database initialization, connection handling, and helper functions consumed by the rest of the backend.
+
+- **Meridian scraper**
+  - Implemented a backend scraper that collects listings from the Meridian property website and integrates them into the application.
+  - Extracted listing data including price, address, bedrooms, bathrooms, and listing links.
+  - Exposed the scraped data through a backend API endpoint for consumption by frontend listing components.
+
+- **Backend logic**
+  - Contributed heavily to the overall backend architecture, including API route design and integration between scrapers, the database, and the frontend.
 
 
 ---
