@@ -185,3 +185,19 @@ I tested the endpoints with curl and verified proper CORS headers, response data
   pushed back to debug further. I had Claude explain the full architecture — scheduler writes to DB, API reads from DB, frontend
   displays — so I could understand and maintain every piece myself. The code was generated specifically for our project's patterns
   and structure, and all architectural decisions were made by me with the AI helping execute them.
+
+---
+
+## Om Kulkarni
+
+### Experiment Description
+I used AI to help implement Google OAuth API integration for the housing manager app. The goal was to add user authentication so that users could sign in with their Google accounts, enabling personalized features and secure access to the application.
+
+### Outcomes
+The AI assisted in implementing the Google OAuth flow, including setting up the OAuth client configuration, handling the authentication callback, managing user sessions, and integrating the sign-in/sign-out functionality into the frontend. The implementation allowed users to authenticate via their Google accounts seamlessly within the app.
+
+### Reflections on Usefulness
+The AI was useful for scaffolding the OAuth integration, which involves coordinating multiple components — client IDs, redirect URIs, token handling, and session management. Having the AI help navigate the Google OAuth API documentation and generate the boilerplate code reduced the time needed to get the authentication flow working end-to-end.
+
+### Ensuring Correctness, Clarity, and Fair Use
+The generated code was reviewed and tested locally by verifying the full OAuth flow — from the initial Google sign-in prompt through token exchange and session creation. Sensitive credentials were kept out of version control, and the implementation was checked to ensure it followed Google's OAuth 2.0 best practices. The AI output was treated as a starting point and adjusted to fit the project's existing architecture and coding conventions.
