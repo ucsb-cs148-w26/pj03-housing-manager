@@ -16,12 +16,6 @@ function HomePage() {
         <AboutSection />
       </section>
 
-      <section id="listings">
-        <RecentListingsSection />
-      <section id="all-listings">
-        <AllListingsSection />
-      </section>
-
       <section id="map">
         <MapView />
       </section>
