@@ -21,12 +21,12 @@ function HomePage() {
         <RecentListingsSection />
       </section>
 
-      <section id="all-listings">
-        <AllListingsSection />
-      </section>
-
       <section id="map">
         <MapView />
+      </section>
+
+      <section id="all-listings">
+        <AllListingsSection />
       </section>
 
       <section id="sublease">
