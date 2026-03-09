@@ -27,7 +27,7 @@ const formatPrice = (price) => {
   return `$${price.toLocaleString()}/mo`;
 };
 
-function MapView() {
+function MapView({ externalSelectedListing = null }) {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -110,6 +110,13 @@ function MapView() {
       setGeocoding(false);
     }
   };
+
+  // React to listing selected from Browse All section
+  useEffect(() => {
+    if (externalSelectedListing) {
+      handleListingClick(externalSelectedListing);
+    }
+  }, [externalSelectedListing]);
 
   const onMapLoad = (map) => {
     mapRef.current = map;

@@ -10,6 +10,7 @@ function ListingList({
   selectedListingIds = [],
   getListingId = null,
   onToggleSelect = null,
+  onCardClick = null,
 }) {
   if (loading) {
     return <div className="listing-status">Scraping listings... This may take a moment.</div>;
@@ -45,6 +46,7 @@ function ListingList({
                 ? () => onToggleSelect(getListingId(listing), listing)
                 : null
             }
+            onCardClick={onCardClick}
           />
         ))}
       </div>

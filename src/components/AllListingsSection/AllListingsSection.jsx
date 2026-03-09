@@ -12,7 +12,7 @@ const SOURCE_LABELS = {
   wolfe: 'Wolfe & Associates',
 };
 
-function AllListingsSection() {
+function AllListingsSection({ onCardClick = null }) {
   const [allListings, setAllListings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -372,6 +372,7 @@ function AllListingsSection() {
           selectedListingIds={selectedListingIds}
           getListingId={getListingId}
           onToggleSelect={handleToggleListingSelect}
+          onCardClick={onCardClick}
           emptyMessage={
             allListings.length === 0
               ? 'No listings yet. Click "Refresh listings" to scrape from every company.'

@@ -53,18 +53,17 @@
   color: var(--color-text);
 }
 
-.listing-link {
-  display: block;
-  color: inherit;
+.listing-clickable {
+  cursor: pointer;
+}
+
+.listing-address-link {
+  color: var(--color-primary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.listing-link .listing-address {
-  color: var(--color-primary);
-}
-
-.listing-link:hover .listing-address {
+.listing-address-link:hover {
   color: var(--color-info);
   text-decoration: underline;
 }
