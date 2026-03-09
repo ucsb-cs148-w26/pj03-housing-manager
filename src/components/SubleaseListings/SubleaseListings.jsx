@@ -10,6 +10,7 @@ function SubleaseListings() {
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [images, setImages] = useState([]);
   const [expandedComments, setExpandedComments] = useState({});
   const [commentForms, setCommentForms] = useState({});
   const [comments, setComments] = useState({});
@@ -27,7 +28,6 @@ function SubleaseListings() {
   const [commentSuccess, setCommentSuccess] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  // Track the logged-in user
   const [user, setUser] = useState(getCurrentUser);
   useEffect(() => {
     const handleAuthChange = (e) => setUser(e.detail);
@@ -35,7 +35,6 @@ function SubleaseListings() {
     return () => window.removeEventListener('auth-change', handleAuthChange);
   }, []);
 
-  // Load posts from backend on mount
   useEffect(() => {
     async function fetchPosts() {
       setLoading(true);
@@ -55,11 +54,10 @@ function SubleaseListings() {
     fetchPosts();
   }, []);
 
-  // Lazy-load comments when a post's comment section is expanded
   useEffect(() => {
     const openPostIds = Object.keys(expandedComments).filter(id => expandedComments[id]);
     openPostIds.forEach(async (postId) => {
-      if (comments[postId] !== undefined) return; // already loaded
+      if (comments[postId] !== undefined) return;
       try {
         const res = await fetch(`${API_URL}/subleases/${postId}/comments`);
         if (!res.ok) return;
@@ -104,6 +102,7 @@ function SubleaseListings() {
     }
     if (!form.dates.trim()) errors.dates = 'Available dates are required.';
     if (!form.description.trim()) errors.description = 'Description is required.';
+    if (images.length === 0) errors.images = 'At least one photo is required.';
     return errors;
   }
 
@@ -111,6 +110,15 @@ function SubleaseListings() {
     setForm({ ...form, [e.target.name]: e.target.value });
     if (formErrors[e.target.name]) {
       setFormErrors({ ...formErrors, [e.target.name]: undefined });
+    }
+  }
+
+  function handleImageChange(e) {
+    const files = Array.from(e.target.files);
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImages(previews);
+    if (formErrors.images) {
+      setFormErrors({ ...formErrors, images: undefined });
     }
   }
 
@@ -135,8 +143,10 @@ function SubleaseListings() {
       });
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const newPost = await res.json();
+      newPost.images = images;
       setPosts(prev => [newPost, ...prev]);
       setForm({ title: '', location: '', rent: '', dates: '', description: '' });
+      setImages([]);
       setFormErrors({});
       setShowForm(false);
       setSuccessMessage('Listing posted successfully!');
@@ -326,6 +336,26 @@ function SubleaseListings() {
               {formErrors.description && <span className="field-error">{formErrors.description}</span>}
             </div>
 
+            <div className="form-field">
+              <label className="image-upload-label">
+                Photos (required)
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                />
+              </label>
+              {formErrors.images && <span className="field-error">{formErrors.images}</span>}
+              {images.length > 0 && (
+                <div className="image-preview-grid">
+                  {images.map((src, i) => (
+                    <img key={i} src={src} alt={`preview-${i}`} className="image-preview" />
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button type="submit" disabled={submitting}>
               {submitting ? 'Posting…' : 'Post Listing'}
             </button>
@@ -345,6 +375,13 @@ function SubleaseListings() {
           )}
           {posts.map(post => (
             <div className="sublease-card" key={post.id}>
+              {post.images?.length > 0 && (
+                <div className="card-image-grid">
+                  {post.images.map((src, i) => (
+                    <img key={i} src={src} alt={`listing-${i}`} className="card-image" />
+                  ))}
+                </div>
+              )}
               <div className="sublease-card-header">
                 <span className="sublease-tag">Sublease</span>
                 <span className="sublease-price">${post.rent}/mo</span>
@@ -354,7 +391,6 @@ function SubleaseListings() {
               <div className="sublease-dates">{post.dates}</div>
               <div className="sublease-description">{post.description}</div>
 
-              {/* ✅ Now shows author name, email, and date */}
               <div className="sublease-author">
                 Posted by {post.author_name}
                 <span className="author-email"> ({post.author_email})</span>
@@ -423,7 +459,6 @@ function SubleaseListings() {
                         (comments[post.id] || []).map(comment => (
                           <div key={comment.id} className="comment" data-testid={`comment-${comment.id}`}>
                             <div className="comment-header">
-                              {/* ✅ Now shows commenter name, email, and timestamp */}
                               <div className="comment-author-info">
                                 <span className="comment-author">{comment.author_name}</span>
                                 <span className="comment-author-email">{comment.author_email}</span>
