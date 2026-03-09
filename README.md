@@ -88,6 +88,8 @@ npm run build
 
 ### Deployment
 
+**Live App:** [https://pj03-housing-manager.vercel.app/](https://pj03-housing-manager.vercel.app/)
+
 The app requires deploying both the **backend** (Python API) and **frontend** (React) separately.
 
 #### 1. Deploy Backend to Railway
