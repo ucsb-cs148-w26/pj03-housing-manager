@@ -1,3 +1,4 @@
+import { useState, useRef, useCallback } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header/Header'
 import AboutSection from './components/AboutSection/AboutSection'
@@ -10,18 +11,29 @@ import AdminUsersPage from './components/AdminUsersPage/AdminUsersPage'
 import './App.css'
 
 function HomePage() {
+  const [mapSelectedListing, setMapSelectedListing] = useState(null)
+  const mapSectionRef = useRef(null)
+
+  const handleCardClick = useCallback((listing) => {
+    // Use a new object reference each time so the effect re-fires even for the same listing
+    setMapSelectedListing({ ...listing })
+    if (mapSectionRef.current) {
+      mapSectionRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [])
+
   return (
     <main className="main-content">
       <section id="about">
         <AboutSection />
       </section>
 
-      <section id="map">
-        <MapView />
+      <section id="map" ref={mapSectionRef}>
+        <MapView externalSelectedListing={mapSelectedListing} />
       </section>
 
       <section id="all-listings">
-        <AllListingsSection />
+        <AllListingsSection onCardClick={handleCardClick} />
       </section>
 
       <section id="sublease">
