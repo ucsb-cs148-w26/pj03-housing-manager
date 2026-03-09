@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header/Header'
 import AboutSection from './components/AboutSection/AboutSection'
-import RecentListingsSection from './components/RecentListings/RecentListingsSection'
 import SubleaseListings from './components/SubleaseListings/SubleaseListings'
 import ScraperSection from './components/ScraperSection/ScraperSection'
 import AllListingsSection from './components/AllListingsSection/AllListingsSection'
@@ -19,6 +18,8 @@ function HomePage() {
 
       <section id="listings">
         <RecentListingsSection />
+      <section id="all-listings">
+        <AllListingsSection />
       </section>
 
       <section id="map">
