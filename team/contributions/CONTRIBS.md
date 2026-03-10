@@ -110,6 +110,13 @@ It also provides context for GitHub commit activity and any pair programming not
 
 - **Displayed poster email on sublease listings and comments** ([#122](https://github.com/ucsb-cs148-w26/pj03-housing-manager/pull/122))
   - Added author email display on sublease post cards and comment entries so users can contact posters off-site.
+ 
+- **Replaced Live Scraper section with Roommate Finder chat** ([#132](https://github.com/ucsb-cs148-w26/pj03-housing-manager/pull/132))
+  - Removed the Live Scraper UI from the homepage while keeping all backend scraper endpoints intact.
+  - Built a new `RoommateChat` component with three rooms: General, Dorms, and Leases & Apartments.
+  - Added `chat_messages` table to the database and three backend endpoints (`GET`, `POST`, `DELETE /chat/{room}`).
+  - Messages persist to the SQLite database; only authenticated users can post or delete their own messages.
+  - Added a "Roommates" nav link in the header replacing the scraper section anchor
 
 
 ---
