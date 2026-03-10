@@ -1,5 +1,5 @@
 <font size="5">**Housing Application Manager**</font>
-A web application designed to easily prase through different leasing companies and their various housing information with provided user pereferences.
+A web application designed to easily parse through different leasing companies and their various housing information with provided user pereferences as well as find rommates and subleases.
 
 ---
 
@@ -8,7 +8,7 @@ A web application designed to easily prase through different leasing companies a
 This is a React-based Hello World application for CS148 lab01.
 
 ### Deployed App URL
-**
+[https://pj03-housing-manager.vercel.app/](https://pj03-housing-manager.vercel.app/)
 
 ### Prerequisites
 Before running this app, make sure you have the following installed:
