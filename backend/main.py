@@ -23,6 +23,7 @@ from database import (
     create_sublease_post, get_sublease_posts, delete_sublease_post,
     create_comment, get_comments_for_post, delete_comment,
     upsert_user, get_user_by_sub, get_all_users, update_user_role,
+    get_chat_messages, create_chat_message, delete_chat_message,
 )
 from scheduler import scrape_loop, run_all_scrapers_to_db
 
@@ -342,6 +343,53 @@ async def delete_comment_endpoint(post_id: int, comment_id: int, author_email: s
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete comment: {str(e)}")
 
+# Roommate Chat endpoints 
+
+VALID_ROOMS = {"dorms", "leases", "general"}
+
+class ChatMessageIn(BaseModel):
+    text: str
+    author_name: str
+    author_email: str
+    author_picture: str | None = None
+
+
+@app.get("/chat/{room}")
+async def get_messages(room: str):
+    """Return the last 100 messages for a chat room."""
+    if room not in VALID_ROOMS:
+        raise HTTPException(status_code=404, detail=f"Room '{room}' not found.")
+    try:
+        messages = await get_chat_messages(room)
+        return {"room": room, "messages": messages}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load messages: {str(e)}")
+
+
+@app.post("/chat/{room}", status_code=201)
+async def post_message(room: str, body: ChatMessageIn):
+    """Post a new message to a chat room. User must be authenticated (enforced on frontend)."""
+    if room not in VALID_ROOMS:
+        raise HTTPException(status_code=404, detail=f"Room '{room}' not found.")
+    try:
+        message = await create_chat_message(room, body.model_dump())
+        return message
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to post message: {str(e)}")
+
+
+@app.delete("/chat/{room}/{message_id}")
+async def delete_message(room: str, message_id: int, author_email: str):
+    """Delete a message. Only the original author can delete."""
+    try:
+        deleted = await delete_chat_message(message_id, author_email)
+        if not deleted:
+            raise HTTPException(status_code=404, detail="Message not found or not owned by you.")
+        return {"status": "deleted"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete message: {str(e)}")
 
 #  Auth endpoints 
 

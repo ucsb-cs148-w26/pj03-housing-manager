@@ -61,6 +61,8 @@ async def init_db():
                 FOREIGN KEY (post_id) REFERENCES sublease_posts(id) ON DELETE CASCADE
             )
         """)
+        
+        await init_chat_table(db)
 
         await db.execute("""
             CREATE TABLE IF NOT EXISTS users (
@@ -311,3 +313,78 @@ async def update_user_role(user_id: int, role: str) -> dict | None:
         )
         row = await cursor.fetchone()
         return dict(row) if row else None
+    
+# ── Roommate Chat ──────────────────────────────────────────────────────────────
+
+async def init_chat_table(db):
+    """Called inside init_db — creates chat_messages table."""
+    await db.execute("""
+        CREATE TABLE IF NOT EXISTS chat_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            room TEXT NOT NULL,
+            text TEXT NOT NULL,
+            author_name TEXT NOT NULL,
+            author_email TEXT NOT NULL,
+            author_picture TEXT,
+            created_at TEXT NOT NULL
+        )
+    """)
+
+
+async def get_chat_messages(room: str, limit: int = 100) -> list[dict]:
+    """Return the most recent messages for a chat room."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        cursor = await db.execute(
+            """
+            SELECT id, room, text, author_name, author_email, author_picture, created_at
+            FROM chat_messages
+            WHERE room = ?
+            ORDER BY created_at DESC
+            LIMIT ?
+            """,
+            (room, limit),
+        )
+        rows = await cursor.fetchall()
+        return list(reversed([dict(row) for row in rows]))
+
+
+async def create_chat_message(room: str, message: dict) -> dict:
+    """Insert a new chat message and return it with its generated id."""
+    now = datetime.now(timezone.utc).isoformat()
+    async with aiosqlite.connect(DB_PATH) as db:
+        cursor = await db.execute(
+            """
+            INSERT INTO chat_messages (room, text, author_name, author_email, author_picture, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                room,
+                message["text"],
+                message["author_name"],
+                message["author_email"],
+                message.get("author_picture"),
+                now,
+            ),
+        )
+        await db.commit()
+        return {
+            "id": cursor.lastrowid,
+            "room": room,
+            "text": message["text"],
+            "author_name": message["author_name"],
+            "author_email": message["author_email"],
+            "author_picture": message.get("author_picture"),
+            "created_at": now,
+        }
+
+
+async def delete_chat_message(message_id: int, author_email: str) -> bool:
+    """Delete a message. Returns True if deleted, False if not found or not owned."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        cursor = await db.execute(
+            "DELETE FROM chat_messages WHERE id = ? AND author_email = ?",
+            (message_id, author_email),
+        )
+        await db.commit()
+        return cursor.rowcount > 0

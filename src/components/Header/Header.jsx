@@ -100,6 +100,11 @@ function Header() {
             </a>
           </li>
           <li>
+            <a href={isHome ? '#roommates' : '/#roommates'} onClick={(e) => handleNavClick(e, 'roommates')}>
+              Roommates
+            </a>
+          </li>
+          <li>
             <a href={isHome ? '#contact' : '/#contact'} onClick={(e) => handleNavClick(e, 'contact')}>
               Contact
             </a>
