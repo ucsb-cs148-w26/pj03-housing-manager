@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header/Header'
 import AboutSection from './components/AboutSection/AboutSection'
 import SubleaseListings from './components/SubleaseListings/SubleaseListings'
-import ScraperSection from './components/ScraperSection/ScraperSection'
+import RoommateChat from './components/RoommateChat/RoommateChat'
 import AllListingsSection from './components/AllListingsSection/AllListingsSection'
 import Footer from './components/Footer/Footer'
 import MapView from './components/MapView/MapView'
@@ -15,7 +15,6 @@ function HomePage() {
   const mapSectionRef = useRef(null)
 
   const handleCardClick = useCallback((listing) => {
-    // Use a new object reference each time so the effect re-fires even for the same listing
     setMapSelectedListing({ ...listing })
     if (mapSectionRef.current) {
       mapSectionRef.current.scrollIntoView({ behavior: 'smooth' })
@@ -40,8 +39,8 @@ function HomePage() {
         <SubleaseListings />
       </section>
 
-      <section id="scraper">
-        <ScraperSection />
+      <section id="roommates">
+        <RoommateChat />
       </section>
 
       <section id="contact">
